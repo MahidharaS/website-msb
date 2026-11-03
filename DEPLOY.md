@@ -17,8 +17,8 @@ Edit or add files in `chatbot/knowledge/` (resume text, GitHub project write-ups
 
 ```bash
 cd chatbot && cp .env.example .env    # fill SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY
-pip install -r requirements.txt
-python ingest.py
+docker compose run --rm api python ingest.py
+# (or, with a Python venv: pip install -r requirements.txt && python ingest.py)
 ```
 
 Re-run `python ingest.py` whenever the knowledge files change.
@@ -44,7 +44,8 @@ Free Spaces sleep after inactivity; the site shows "waking the model" and falls 
 offline answers until it is up.
 
 ## 4. Render (website)
-1. render.com → New → Blueprint → pick this repo (uses `render.yaml`).
+1. render.com → New → Blueprint → pick this repo (uses `render.yaml`, which builds the
+   root `Dockerfile` with Bun — no npm involved).
 2. Set `VITE_CHAT_API_URL=https://<you>-ask-mahi.hf.space` (and `VITE_RESUME_URL` if you
    host the resume yourself). These are baked in at build time, so redeploy after changing them.
 

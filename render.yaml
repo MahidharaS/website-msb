@@ -1,16 +1,16 @@
-# Render Blueprint for the portfolio frontend (TanStack Start SSR on Node).
+# Render Blueprint for the portfolio frontend. Builds the root Dockerfile (Bun, no npm).
 # Lovable keeps building its own way; this file is only read by Render.
 services:
   - type: web
     name: mahidhara-portfolio
-    runtime: node
+    runtime: docker
     plan: free
-    buildCommand: npm install --no-audit --no-fund && npm run build:node
-    startCommand: npm run start:node
+    dockerfilePath: ./Dockerfile
     healthCheckPath: /
     envVars:
-      - key: NODE_VERSION
-        value: "22"
+      - key: PORT
+        value: "3000"
+      # Build-time values: set them, then redeploy. Render passes env vars as Docker build args.
       - key: VITE_CHAT_API_URL
         sync: false # e.g. https://<your-hf-user>-ask-mahi.hf.space
       - key: VITE_RESUME_URL
