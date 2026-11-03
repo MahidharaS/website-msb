@@ -1,11 +1,89 @@
 import portrait from "@/assets/portrait.asset.json";
 import resume from "@/assets/resume.asset.json";
-export const assets = { portrait: portrait.url, resume: resume.url };
+// Local copies keep localhost and self-hosted (Render) builds working; Lovable-hosted URLs
+// are kept for anything not yet copied into /public.
+const env = import.meta.env as Record<string, string | undefined>;
+export const assets = {
+  portrait: "/portrait.jpg",
+  portraitLovable: portrait.url,
+  resume: env["VITE_RESUME_URL"] || resume.url,
+};
 export const motionChapters = [
   { label: "OBSERVE", title: "START WITH THE MESS.", text: "Scattered signals. Different people. Competing priorities. The first job is to understand what is actually happening." },
   { label: "CONNECT", title: "FIND THE CONNECTION.", text: "Bring data, people, and process into the same picture. Find the cause, not just the symptom." },
   { label: "CHANGE", title: "MAKE IT WORK.", text: "Turn the insight into a working system. Put it in people's hands. Measure what changes." },
 ];
+export const journeyChapters = [
+  {
+    key: "dashboard",
+    label: "ANALYST",
+    title: "IT STARTED WITH A DASHBOARD.",
+    text: "Excel, SQL, Power BI and Tableau across sales, operations, marketing, HR and the shop floor. Hand me a messy source and I will make it answer a business question.",
+    tools: ["Excel", "SQL", "Power BI", "Tableau", "Python"],
+    anchors: ["REVENUE · ₹50L", "LEADS · 1L+", "REPORTING · −40%", "OUTPUT · +10%"],
+  },
+  {
+    key: "neural",
+    label: "ML ENGINEER",
+    title: "THEN THE DATA STARTED TO LEARN.",
+    text: "NLP and deep learning on 1 lakh+ CRM records. A lead-scoring model at 94.6% accuracy, tracked and served with MLflow and wired into the live sales workflow.",
+    tools: ["Python", "NLP", "Deep learning", "ANN", "MLflow"],
+    anchors: ["SALES", "OPERATIONS", "MARKETING", "HR", "BUSINESS", "LEAD SCORE 94.6%", "NLP ON REMARKS", "MLFLOW SERVING", "SCORES IN THE CRM"],
+  },
+  {
+    key: "vector",
+    label: "AI ENGINEER",
+    title: "NOW IT TALKS BACK.",
+    text: "LLM fine-tuning with LoRA and QLoRA, retrieval over vector databases, orchestration with LangChain and tracing with LangSmith. The assistant in Ask Mahi is built the same way.",
+    tools: ["LoRA · QLoRA", "LangChain", "LangSmith", "Vector DB", "Hugging Face"],
+    anchors: ["LLM FINE-TUNING", "LANGCHAIN", "LANGSMITH", "RAG", "EMBEDDINGS", "NLP", "AGENTS", "MLOPS"],
+  },
+  {
+    key: "contours",
+    label: "DATA SCIENTIST",
+    title: "NEXT: THE WHOLE LANDSCAPE.",
+    text: "The analyst asks what happened. The engineer makes it predict. The scientist asks why, and what if. That is the role I am moving into, with every layer above already in hand.",
+    tools: ["Statistics", "Experiments", "Forecasting", "Causal questions"],
+    anchors: ["STATISTICS", "EXPERIMENTS", "FORECASTING", "WHY / WHAT IF"],
+  },
+  {
+    key: "portrait",
+    label: "YOUR TEAM",
+    title: "BACK TO THE PERSON.",
+    text: "Every grain on this page came back together. That is the job: take scattered data, people and process and reassemble them into something that works.",
+    tools: ["Data", "People", "Process"],
+    anchors: [],
+  },
+] as const;
+export const pitch = [
+  {
+    title: "A translator in the room.",
+    text: "I have worked with sales, operations, marketing, HR and the shop floor. I can sit with the business, find the real question and explain the model back in their language.",
+    proof: "5 business functions",
+  },
+  {
+    title: "Models that reach the workflow.",
+    text: "My lead-scoring model is not a notebook. Its scores sit inside the CRM and change who sales calls first.",
+    proof: "94.6% accuracy · in production",
+  },
+  {
+    title: "One version of the truth.",
+    text: "I agree the KPI definitions before I build the dashboard, so four functions stop arguing about whose spreadsheet is right.",
+    proof: "12+ KPIs · ~40% faster reporting",
+  },
+  {
+    title: "LLM work that is measured.",
+    text: "Fine-tuning with LoRA and QLoRA, retrieval with LangChain, tracing and evaluation with LangSmith. Built to be checked, not to demo once.",
+    proof: "RAG · fine-tuning · evals",
+  },
+  {
+    title: "Someone who can lead.",
+    text: "I head a 10-person unit today, ran a 65-person shift before that, and have trained 200+ people in analytics.",
+    proof: "10 people · 200+ trained",
+  },
+];
+export const seeking =
+  "A data scientist role where the questions are still open: a team that wants someone who can frame the problem, build the model and get it used.";
 export const email = "mahidhara.s@outlook.com";
 export const linkedin = "https://www.linkedin.com/in/mahidhara-s/";
 export const navigation = [
@@ -13,7 +91,7 @@ export const navigation = [
   { to: "/story", name: "The Journey" },
   { to: "/work", name: "The Work" },
   { to: "/approach", name: "The Approach" },
-  { to: "/lab", name: "The Lab" },
+  { to: "/lab", name: "Ask Mahi" },
   { to: "/multiplier", name: "The Multiplier" },
   { to: "/contact", name: "Let’s Talk" },
 ] as const;

@@ -6,3 +6,9 @@
 - [x] Verify resume download and guided email preparation.
 - [x] Verify navigation, interaction, facts, and mobile layouts.
 - [ ] Persist contact inquiries — blocked: Lovable Cloud provisioning failed. Guided email contact is working instead.
+- [x] Grain engine: portrait → dashboard → neural net → vector space → contours → portrait, with scatter/reassemble transitions and pointer interaction.
+- [x] Swarm-cursor intro and dashboard build.
+- [x] Replace the lead-score toy in The Lab with Ask Mahi (RAG chat) + offline fallback.
+- [x] "What your team gets" pitch section.
+- [ ] Deploy chatbot/ to a Hugging Face Space, run supabase/schema.sql + ingest.py, set VITE_CHAT_API_URL.
+- [ ] Add resume text and GitHub project write-ups to chatbot/knowledge/.

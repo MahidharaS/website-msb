@@ -54,6 +54,7 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
           <Link to="/story">Story</Link>
           <Link to="/work">Work</Link>
           <Link to="/approach">Approach</Link>
+          <Link to="/lab">Ask Mahi</Link>
           <Link to="/contact">Contact</Link>
         </nav>
         <div className="header-tools">

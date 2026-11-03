@@ -1,0 +1,17 @@
+# Render Blueprint for the portfolio frontend (TanStack Start SSR on Node).
+# Lovable keeps building its own way; this file is only read by Render.
+services:
+  - type: web
+    name: mahidhara-portfolio
+    runtime: node
+    plan: free
+    buildCommand: npm install --no-audit --no-fund && npm run build:node
+    startCommand: npm run start:node
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: VITE_CHAT_API_URL
+        sync: false # e.g. https://<your-hf-user>-ask-mahi.hf.space
+      - key: VITE_RESUME_URL
+        sync: false

@@ -4,8 +4,8 @@ import { pageHead } from "@/data/content";
 export const Route = createFileRoute("/lab")({
   head: () =>
     pageHead(
-      "The Lab",
-      "Explore practical experiments, side projects, and an illustrative lead-scoring playground.",
+      "Ask Mahi",
+      "Interview an AI assistant grounded in Mahidhara's work history, case studies and skills.",
     ),
   component: Lab,
 });

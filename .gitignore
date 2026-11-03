@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.output/
+.nitro/
+.tanstack/
+.vinxi/
+package-lock.json
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+chatbot/.cache/

@@ -10,6 +10,8 @@ I have also attached some references here. Based on these references, I want you
 
 This project was built with [Lovable](https://lovable.dev).
 
+**Run it locally:** see [LOCAL.md](LOCAL.md). **Deploy (Render + Hugging Face + Supabase):** see [DEPLOY.md](DEPLOY.md). **Chatbot backend:** [chatbot/](chatbot/).
+
 **Live app**: https://lime-and-heart-showcase.lovable.app
 
 ## Build with Lovable

@@ -11,7 +11,11 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "dev:local": "vite dev --host 127.0.0.1 --port 5173",
+    "build:node": "NITRO_PRESET=node-server vite build",
+    "start:node": "node .output/server/index.mjs",
+    "chatbot:dev": "cd chatbot && uvicorn app.main:app --reload --port 7860"
   },
   "overrides": {
     "rolldown": "1.2.1"
