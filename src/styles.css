@@ -1383,3 +1383,47 @@
 .hero-v2 > :not(.hero-grid) { position: relative; z-index: 1; }
 .hero-v2 > .hero-portrait { position: relative; }
 @media (max-width: 760px) { .hero-grid span { display: none; } }
+
+/* ---------- storyline (/story) ---------- */
+.story-intro { position: relative; min-height: calc(100svh - 98px); display: flex; flex-direction: column; justify-content: center; gap: 26px; padding: 60px 0; overflow: hidden; }
+.story-intro::before { content: ""; position: absolute; width: 70vmin; aspect-ratio: 1; left: -18vmin; top: -22vmin; border-radius: 50%; background: radial-gradient(circle at 60% 60%, #8B0D1A, #3a0509 55%, transparent 70%); box-shadow: 0 0 0 1px color-mix(in oklab, #ff2a3d 50%, transparent) inset; opacity: .75; pointer-events: none; }
+.story-intro > * { position: relative; }
+.story-kicker { color: #ff4d5e; letter-spacing: .12em; }
+.story-intro h1 { font-size: clamp(64px, 10vw, 160px); line-height: .9; }
+.story-intro h1 span { color: transparent; -webkit-text-stroke: 1.5px var(--scene-paper); }
+.story-intro p { max-width: 520px; color: var(--muted-foreground); font-size: 16px; line-height: 1.8; }
+.story-hint { font-size: 10px; letter-spacing: .14em; color: var(--muted-foreground); animation: think 2s infinite; }
+.story-path { position: relative; margin-inline: calc(-1 * var(--shell-inset)); }
+.story-sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; background: #07070a; }
+.story-glow { position: absolute; inset: 0; background: radial-gradient(80% 60% at 70% 0%, color-mix(in oklab, var(--act) 32%, transparent), transparent 70%), radial-gradient(60% 50% at 10% 100%, color-mix(in oklab, var(--act) 14%, transparent), transparent 70%); transition: background .8s; pointer-events: none; }
+.story-canvas { position: absolute; inset: 0; }
+.story-acts { position: absolute; left: var(--shell-inset); bottom: 9vh; width: min(520px, 44vw); }
+.story-act { position: absolute; left: 0; bottom: 0; width: 100%; opacity: 0; transform: translateY(22px); transition: opacity .6s, transform .6s; pointer-events: none; padding: 26px 26px 22px; border-radius: 18px; background: color-mix(in oklab, #07070a 62%, transparent); backdrop-filter: blur(10px); border: 1px solid color-mix(in oklab, var(--c) 35%, transparent); }
+.story-act[data-active="true"] { opacity: 1; transform: none; pointer-events: auto; }
+.story-act[aria-hidden="true"] { visibility: hidden; }
+.story-act[data-active="true"] { visibility: visible; }
+.story-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 10px; letter-spacing: .1em; color: var(--c); margin-bottom: 14px; }
+.story-meta span:last-child { color: var(--muted-foreground); text-align: right; }
+.story-act h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: clamp(28px, 2.7vw, 40px); line-height: 1.08; letter-spacing: -.01em; }
+.story-body { color: var(--muted-foreground); font-size: 14px; line-height: 1.75; margin-top: 14px; }
+.story-lesson { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 15px; display: grid; gap: 6px; }
+.story-lesson .mono { font-size: 9px; letter-spacing: .12em; color: var(--c); }
+.story-proof { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 14px 0 0; }
+.story-proof li { font-size: 10px; padding: 5px 9px; border-radius: 99px; border: 1px solid color-mix(in oklab, var(--c) 45%, transparent); color: var(--foreground); }
+.story-cta { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.story-rail { position: absolute; right: var(--shell-inset); top: 50%; transform: translateY(-50%); display: grid; gap: 14px; }
+.story-rail button { display: flex; align-items: center; gap: 10px; justify-content: flex-end; flex-direction: row-reverse; font-size: 10px; letter-spacing: .1em; color: var(--muted-foreground); background: none; border: 0; text-align: left; }
+.story-rail i { width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--c); transition: background .3s, box-shadow .3s; }
+.story-rail button[data-done="true"] i { background: color-mix(in oklab, var(--c) 60%, transparent); }
+.story-rail button[data-active="true"] { color: var(--foreground); }
+.story-rail button[data-active="true"] i { background: var(--c); box-shadow: 0 0 12px var(--c); }
+.story-progress { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; transform-origin: left; transform: scaleX(var(--story-p, 0)); background: linear-gradient(90deg, #4DA3FF, #FFB547, #8B0D1A, #FF6B4A, #9B7BFF, #C6F432, #FF5FA2); }
+.story-recap { display: grid; gap: 26px; }
+@media (max-width: 900px) {
+  .story-acts { left: 16px; right: 16px; width: auto; bottom: 4vh; }
+  .story-act { padding: 18px; }
+  .story-act h2 { font-size: 24px; }
+  .story-body { font-size: 12.5px; line-height: 1.6; }
+  .story-rail { top: 90px; transform: none; right: 16px; gap: 8px; }
+  .story-rail span { display: none; }
+}

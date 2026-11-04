@@ -271,6 +271,90 @@ export const timeline = [
     text: "From automated ingestion and NLP-based lead scoring to cross-functional KPIs and running a 10-person unit. Analyst by choice. Operator by nature.",
   },
 ];
+/**
+ * The storyline: one path, seven turns. Each act is a bend in the road on /story, with
+ * the colour the path takes on there. Facts mirror `timeline` and `cases`.
+ */
+export const storyline = [
+  {
+    id: "start",
+    years: "2015–2019",
+    place: "NIE MYSORE",
+    role: "THE ENGINEER",
+    line: "I learned how things work before I learned what they were worth.",
+    body: "Mechanical engineering taught me systems, constraints and tolerances: every output has a cause you can trace. I still debug business problems the way I was taught to debug machines.",
+    lesson: "Find the mechanism, not the symptom.",
+    proof: ["BE Mechanical Engineering"],
+    color: "#4DA3FF",
+  },
+  {
+    id: "contact",
+    years: "2019–2020",
+    place: "URS CARS",
+    role: "FIRST CONTACT",
+    line: "Then I met the customer.",
+    body: "Straight out of college into live operations as a service advisor: real people, real vehicles, real deadlines. Engineering had answers; the front desk had questions nobody had written down.",
+    lesson: "The problem is whatever the customer feels it is.",
+    proof: ["Service operations", "Customer-facing"],
+    color: "#FFB547",
+  },
+  {
+    id: "pause",
+    years: "2020",
+    place: "COVID-19",
+    role: "THE PAUSE",
+    line: "Four months where the road simply stopped.",
+    body: "The pandemic delayed my next role by four months. No office, no shop floor, nothing to optimise but myself. It is the stretch of road where I decided data would be my lantern.",
+    lesson: "Alone isn't lost.",
+    proof: ["4 months on hold"],
+    color: "#8B0D1A",
+  },
+  {
+    id: "floor",
+    years: "2020–2021",
+    place: "TRITON VALVES",
+    role: "THE SHOP FLOOR",
+    line: "65 people, one shift, and machines that went quiet when nobody was looking.",
+    body: "As a graduate engineer trainee I ran a 65-member shift. I built real-time production dashboards that exposed idle time and throughput gaps, and used SPC and visual management to fix recurring quality bottlenecks.",
+    lesson: "Data only matters when someone acts on it.",
+    proof: ["+10% shift output", "65-person shift", "SPC"],
+    color: "#FF6B4A",
+  },
+  {
+    id: "pivot",
+    years: "2022–2024",
+    place: "RIMS BANGALORE · KPMG · PEPINO",
+    role: "THE PIVOT",
+    line: "I traded the spanner for the business lens.",
+    body: "A PGDM in Business Analytics & Marketing, KPMG Business Analytics L1 & L2, and an internship mapping dataflows and 15+ user workflows across three hospital modules. I learned to ask what a number is for before I calculate it.",
+    lesson: "Understand the workflow before designing the solution.",
+    proof: ["PGDM Business Analytics", "KPMG BA L1 & L2", "15+ workflows"],
+    color: "#9B7BFF",
+  },
+  {
+    id: "engine",
+    years: "2024–NOW",
+    place: "DIGITAL MAVEN",
+    role: "THE ENGINE",
+    line: "Now the models I build sit inside the work, not beside it.",
+    body: "I connected Meta, web and email leads into the CRM (about 1 lakh records, no manual handling), built NLP and deep-learning lead scoring at 94.6% accuracy, defined 12+ shared KPIs, and lead a 10-person unit supporting about ₹50 lakh in revenue.",
+    lesson: "A model is only useful when it changes a real decision.",
+    proof: ["94.6% lead score", "1L+ records", "−40% reporting time", "10-person unit"],
+    color: "#C6F432",
+  },
+  {
+    id: "next",
+    years: "NEXT",
+    place: "YOUR TEAM?",
+    role: "THE BRANCH",
+    line: "The road doesn't end here. It branches.",
+    body: "Analyst, engineer, operator, teacher of 200+ people. The next turn is data science: open questions, experiments, and models that explain why, not just what. I would like to walk it with a team that has hard problems.",
+    lesson: "Bring me a messy problem.",
+    proof: ["Data science", "LLMs · LoRA · RAG", "200+ trained"],
+    color: "#FF5FA2",
+  },
+] as const;
+
 export const steps = [
   {
     name: "OBSERVE",

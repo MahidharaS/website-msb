@@ -7,15 +7,25 @@ import {
   Check,
   Layers,
   List,
-    Users,
+  Users,
   BriefcaseBusiness,
   ExternalLink,
   Copy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MotionHero, MotionJourney, TerrainBackdrop } from "@/components/motion-experience";
+import {
+  MotionHero,
+  MotionJourney,
+  TerrainBackdrop,
+} from "@/components/motion-experience";
 import { AskMahi } from "@/components/ask-mahi";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { StoryPath } from "@/components/story-path";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import {
   assets,
   cases,
@@ -53,14 +63,25 @@ export function WorkCard({ item }: { item: (typeof cases)[number] }) {
     <Link to="/work/$slug" params={{ slug: item.slug }} className="work-card">
       <div className={`work-art work-art-${item.slug}`}>
         <svg className="work-signal" viewBox="0 0 400 200" aria-hidden="true">
-          {Array.from({ length: 18 }, (_, i) => <path key={i} d={item.slug === 'lead-engine'
-            ? `M ${i * 23} 0 Q ${200 + (i - 9) * 6} 100 200 200`
-            : item.slug === 'kpi-system' ? `M 0 ${i * 12} C 100 ${i * 12} 260 ${200 - i * 12} 400 ${200 - i * 12}`
-            : `M ${i * 24} 200 L ${i * 24} ${120 - Math.sin(i) * 35} L ${i * 24 + 40} ${120 - Math.sin(i) * 35} L ${i * 24 + 40} 0`} />)}
+          {Array.from({ length: 18 }, (_, i) => (
+            <path
+              key={i}
+              d={
+                item.slug === "lead-engine"
+                  ? `M ${i * 23} 0 Q ${200 + (i - 9) * 6} 100 200 200`
+                  : item.slug === "kpi-system"
+                    ? `M 0 ${i * 12} C 100 ${i * 12} 260 ${200 - i * 12} 400 ${200 - i * 12}`
+                    : `M ${i * 24} 200 L ${i * 24} ${120 - Math.sin(i) * 35} L ${i * 24 + 40} ${120 - Math.sin(i) * 35} L ${i * 24 + 40} 0`
+              }
+            />
+          ))}
         </svg>
         <span className="art-number">{item.metric}</span>
         <span className="art-label mono">{item.metricLabel}</span>
-        <ArrowUpRight className="absolute right-4 top-4 text-primary" size={18} />
+        <ArrowUpRight
+          className="absolute right-4 top-4 text-primary"
+          size={18}
+        />
       </div>
       <h3>{item.title}</h3>
       <div>
@@ -82,9 +103,13 @@ export function Home() {
         <div className="section-top">
           <div>
             <p className="mono section-index">05 / THE PITCH</p>
-            <h2 className="section-heading" id="value-title">WHAT YOUR TEAM GETS.</h2>
+            <h2 className="section-heading" id="value-title">
+              WHAT YOUR TEAM GETS.
+            </h2>
           </div>
-          <span className="mono text-muted-foreground hidden sm:block">NOT WHAT I CAN DO. WHAT YOU CAN USE.</span>
+          <span className="mono text-muted-foreground hidden sm:block">
+            NOT WHAT I CAN DO. WHAT YOU CAN USE.
+          </span>
         </div>
         <div className="value-grid">
           {pitch.map((p, i) => (
@@ -109,7 +134,12 @@ export function Home() {
       <section className="metrics" aria-label="Headline contributions">
         {metrics.map((m) =>
           m.slug ? (
-            <Link key={m.value} to="/work/$slug" params={{ slug: m.slug }} className="metric">
+            <Link
+              key={m.value}
+              to="/work/$slug"
+              params={{ slug: m.slug }}
+              className="metric"
+            >
               <div className="display">{m.value}</div>
               <p>{m.label}</p>
             </Link>
@@ -182,7 +212,8 @@ export function Home() {
         </span>
         <p>
           Sometimes the answer is <strong>analytics.</strong> Sometimes it's{" "}
-          <strong>strategy, psychology, process, technology</strong> — or a combination.
+          <strong>strategy, psychology, process, technology</strong> — or a
+          combination.
         </p>
       </section>
     </main>
@@ -190,32 +221,39 @@ export function Home() {
 }
 export function Story() {
   return (
-    <main>
-      <PageHeading
-        index="01 / THE JOURNEY"
-        title={
-          <>
-            DIFFERENT ENVIRONMENTS.
-            <br />
-            <span>SAME APPROACH.</span>
-          </>
-        }
-      >
-        Engineer by training. Analyst by choice. Operator by nature.
-      </PageHeading>
-      <div className="timeline">
-        {timeline.map((t) => (
-          <section key={t.year} className="chapter">
-            <div className="display chapter-year">{t.year}</div>
-            <div>
-              <div className="mono text-muted-foreground">{t.company}</div>
-              <h2 className="display">{t.title}</h2>
-              <p>{t.text}</p>
-            </div>
-          </section>
-        ))}
-      </div>
-      <section className="section">
+    <main className="story-page">
+      <header className="story-intro">
+        <p className="mono story-kicker">01 / THE STORYLINE</p>
+        <h1 className="display">
+          ALONE, <span>BUT</span>
+          <br />
+          NOT LOST.
+        </h1>
+        <p>
+          One road, seven turns: from an engineering classroom in Mysore to the
+          models a sales team uses every morning. Scroll to walk it. The lantern
+          is data.
+        </p>
+        <span className="mono story-hint">SCROLL TO WALK ↓</span>
+      </header>
+      <StoryPath />
+      <section className="section story-recap" aria-labelledby="recap-title">
+        <p className="mono section-index">THE WHOLE ROAD AT A GLANCE</p>
+        <h2 className="section-heading" id="recap-title">
+          DIFFERENT ENVIRONMENTS. SAME APPROACH.
+        </h2>
+        <div className="timeline">
+          {timeline.map((t) => (
+            <section key={t.year} className="chapter">
+              <div className="display chapter-year">{t.year}</div>
+              <div>
+                <div className="mono text-muted-foreground">{t.company}</div>
+                <h3 className="display">{t.title}</h3>
+                <p>{t.text}</p>
+              </div>
+            </section>
+          ))}
+        </div>
         <Button asChild size="lg">
           <Link to="/work">
             See what I built <ArrowUpRight />
@@ -228,7 +266,9 @@ export function Story() {
 export function Work() {
   const [filter, setFilter] = useState("ALL");
   const [grid, setGrid] = useState(false);
-  const shown = cases.filter((c) => filter === "ALL" || c.tags.includes(filter));
+  const shown = cases.filter(
+    (c) => filter === "ALL" || c.tags.includes(filter),
+  );
   return (
     <main>
       <PageHeading
@@ -245,17 +285,19 @@ export function Work() {
       </PageHeading>
       <div className="flex justify-between items-start gap-4">
         <div className="filters">
-          {["ALL", "DATA", "OPERATIONS", "SALES", "TECHNOLOGY", "PROCESS"].map((f) => (
-            <Button
-              key={f}
-              variant={f === filter ? "default" : "outline"}
-              size="sm"
-              className="mono"
-              onClick={() => setFilter(f)}
-            >
-              {f}
-            </Button>
-          ))}
+          {["ALL", "DATA", "OPERATIONS", "SALES", "TECHNOLOGY", "PROCESS"].map(
+            (f) => (
+              <Button
+                key={f}
+                variant={f === filter ? "default" : "outline"}
+                size="sm"
+                className="mono"
+                onClick={() => setFilter(f)}
+              >
+                {f}
+              </Button>
+            ),
+          )}
         </div>
         <Button
           variant="outline"
@@ -271,8 +313,15 @@ export function Work() {
           grid ? (
             <WorkCard key={c.slug} item={c} />
           ) : (
-            <Link key={c.slug} to="/work/$slug" params={{ slug: c.slug }} className="work-row">
-              <span className="mono text-muted-foreground">0{cases.indexOf(c) + 1}</span>
+            <Link
+              key={c.slug}
+              to="/work/$slug"
+              params={{ slug: c.slug }}
+              className="work-row"
+            >
+              <span className="mono text-muted-foreground">
+                0{cases.indexOf(c) + 1}
+              </span>
               <div>
                 <h3 className="display">{c.title}</h3>
                 {c.tags.map((t) => (
@@ -296,13 +345,23 @@ export function CaseStudy({ slug }: { slug: string }) {
   if (!item)
     return (
       <main>
-        <PageHeading index="NOT FOUND" title="THIS PROBLEM DOESN'T EXIST. YET." />
+        <PageHeading
+          index="NOT FOUND"
+          title="THIS PROBLEM DOESN'T EXIST. YET."
+        />
         <Button asChild>
           <Link to="/work">Back to work</Link>
         </Button>
       </main>
     );
-  const names = ["Context", "The problem", "Diagnosis", "What I built", "Impact", "What I learned"];
+  const names = [
+    "Context",
+    "The problem",
+    "Diagnosis",
+    "What I built",
+    "Impact",
+    "What I learned",
+  ];
   const paragraphs = [
     item.context,
     item.problem,
@@ -311,7 +370,14 @@ export function CaseStudy({ slug }: { slug: string }) {
     item.impact,
     item.lesson,
   ];
-  const pipeline = ["Sources", "Ingestion", "CRM", "Scoring", "Routing", "Enrolments"];
+  const pipeline = [
+    "Sources",
+    "Ingestion",
+    "CRM",
+    "Scoring",
+    "Routing",
+    "Enrolments",
+  ];
   const details = [
     "Meta Lead Ads, website, and email sources.",
     "Automated API ingestion of approximately 1 lakh lead records.",
@@ -327,7 +393,10 @@ export function CaseStudy({ slug }: { slug: string }) {
         <span className="text-primary">{item.metric}</span> — {item.metricLabel}
       </PageHeading>
       <div className="case-layout">
-        <nav className="case-toc mono text-muted-foreground" aria-label="Case study sections">
+        <nav
+          className="case-toc mono text-muted-foreground"
+          aria-label="Case study sections"
+        >
           {names.map((n, i) => (
             <a key={n} href={`#step-${i}`}>
               0{i + 1} / {n}
@@ -359,7 +428,9 @@ export function CaseStudy({ slug }: { slug: string }) {
                   <div className="detail-box">{details[node]}</div>
                 </>
               )}
-              {i === 4 && <div className="display impact-number">{item.metric}</div>}
+              {i === 4 && (
+                <div className="display impact-number">{item.metric}</div>
+              )}
             </section>
           ))}
           <section className="section">
@@ -390,8 +461,8 @@ export function Approach() {
           </>
         }
       >
-        Understand the context. Find the root cause. Build something useful. Then keep making it
-        better.
+        Understand the context. Find the root cause. Build something useful.
+        Then keep making it better.
       </PageHeading>
       <section className="section border-t border-border">
         <div className="section-top">
@@ -426,33 +497,40 @@ export function Approach() {
       </section>
       <section className="section border-t border-border">
         <p className="mono section-index">THE LENSES</p>
-        <h2 className="section-heading mb-7">ONE PROBLEM. MULTIPLE PERSPECTIVES.</h2>
+        <h2 className="section-heading mb-7">
+          ONE PROBLEM. MULTIPLE PERSPECTIVES.
+        </h2>
         <div className="paths">
-          {["Analytics", "Strategy", "Psychology", "Process", "Technology", "People"].map(
-            (n, i) => (
-              <Link
-                to="/work/$slug"
-                params={{ slug: cases[i % 5]?.slug ?? "lead-engine" }}
-                className="path"
-                key={n}
-              >
-                <span className="mono text-primary">0{i + 1}</span>
-                <h3>{n.toUpperCase()}</h3>
-                <ArrowUpRight className="arrow" />
-              </Link>
-            ),
-          )}
+          {[
+            "Analytics",
+            "Strategy",
+            "Psychology",
+            "Process",
+            "Technology",
+            "People",
+          ].map((n, i) => (
+            <Link
+              to="/work/$slug"
+              params={{ slug: cases[i % 5]?.slug ?? "lead-engine" }}
+              className="path"
+              key={n}
+            >
+              <span className="mono text-primary">0{i + 1}</span>
+              <h3>{n.toUpperCase()}</h3>
+              <ArrowUpRight className="arrow" />
+            </Link>
+          ))}
         </div>
       </section>
       <section className="section border-t border-border">
         <p className="mono section-index">THE LEAST INTERESTING PART</p>
         <h2 className="section-heading mb-6">THE TOOLBOX.</h2>
         <p className="toolbox">
-          Python · SQL · R · NLP · Deep Learning · MLflow · LangChain · LangSmith · CrewAI · Dify ·
-          LangFlow · n8n · RAG
+          Python · SQL · R · NLP · Deep Learning · MLflow · LangChain ·
+          LangSmith · CrewAI · Dify · LangFlow · n8n · RAG
           <br />
-          Power BI · Tableau · Excel + VBA · ETL · Requirements · UAT · KPI Design · Process Mapping
-          · Agile · Lean · ClickUp · CRM
+          Power BI · Tableau · Excel + VBA · ETL · Requirements · UAT · KPI
+          Design · Process Mapping · Agile · Lean · ClickUp · CRM
         </p>
         <div className="mt-7 flex gap-2 flex-wrap">
           {[
@@ -478,13 +556,17 @@ export function Approach() {
   );
 }
 export function Lab() {
-  const [project, setProject] = useState<(typeof sideBuilds)[number] | null>(null);
+  const [project, setProject] = useState<(typeof sideBuilds)[number] | null>(
+    null,
+  );
   return (
     <main>
       <TerrainBackdrop />
       <AskMahi />
       <section className="section relative z-[1]">
-        <p className="mono section-index">SIDE BUILDS · ALSO IN THE ASSISTANT'S KNOWLEDGE BASE</p>
+        <p className="mono section-index">
+          SIDE BUILDS · ALSO IN THE ASSISTANT'S KNOWLEDGE BASE
+        </p>
         <div className="paths">
           {sideBuilds.map((p) => (
             <Button
@@ -507,7 +589,9 @@ export function Lab() {
         }}
       >
         <DialogContent className="dialog-panel">
-          <DialogTitle className="display text-3xl">{project?.title}</DialogTitle>
+          <DialogTitle className="display text-3xl">
+            {project?.title}
+          </DialogTitle>
           <DialogDescription className="leading-8 text-muted-foreground">
             {project?.text}
           </DialogDescription>
@@ -609,7 +693,8 @@ export function Contact() {
             <>
               <h2 className="display">LET'S GET IT TO MY INBOX.</h2>
               <p className="text-muted-foreground leading-7">
-                Your message is ready. Open your email app to send it directly to me.
+                Your message is ready. Open your email app to send it directly
+                to me.
               </p>
               <Button asChild className="mt-6">
                 <a href={`mailto:${email}?subject=${subject}&body=${body}`}>
@@ -623,16 +708,18 @@ export function Contact() {
                 <>
                   <h2 className="display">WHO ARE YOU?</h2>
                   <div className="filters">
-                    {["Hiring", "Founder / Business", "Student", "Other"].map((v) => (
-                      <Button
-                        key={v}
-                        type="button"
-                        variant={who === v ? "default" : "outline"}
-                        onClick={() => setWho(v)}
-                      >
-                        {v}
-                      </Button>
-                    ))}
+                    {["Hiring", "Founder / Business", "Student", "Other"].map(
+                      (v) => (
+                        <Button
+                          key={v}
+                          type="button"
+                          variant={who === v ? "default" : "outline"}
+                          onClick={() => setWho(v)}
+                        >
+                          {v}
+                        </Button>
+                      ),
+                    )}
                   </div>
                 </>
               )}
@@ -640,13 +727,24 @@ export function Contact() {
                 <>
                   <h2 className="display">WHAT'S MESSY?</h2>
                   <div className="filters">
-                    {["Data", "Sales", "Marketing", "Operations", "Process", "Tech"].map((d) => (
+                    {[
+                      "Data",
+                      "Sales",
+                      "Marketing",
+                      "Operations",
+                      "Process",
+                      "Tech",
+                    ].map((d) => (
                       <Button
                         type="button"
                         key={d}
                         variant={domains.includes(d) ? "default" : "outline"}
                         onClick={() =>
-                          setDomains((v) => (v.includes(d) ? v.filter((x) => x !== d) : [...v, d]))
+                          setDomains((v) =>
+                            v.includes(d)
+                              ? v.filter((x) => x !== d)
+                              : [...v, d],
+                          )
                         }
                       >
                         {domains.includes(d) && <Check />}
@@ -718,7 +816,9 @@ export function Contact() {
           )}
         </form>
         <aside className="contact-aside">
-          <p className="mono text-muted-foreground mb-5">PREFER THE DIRECT ROUTE?</p>
+          <p className="mono text-muted-foreground mb-5">
+            PREFER THE DIRECT ROUTE?
+          </p>
           <a href={`mailto:${email}`} className="text-foreground break-all">
             {email}
           </a>
