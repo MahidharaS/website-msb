@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUpRight, Menu, ScanLine, Copy, Download } from "lucide-
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { assets, email, linkedin, metrics, navigation } from "@/data/content";
+import { startReveal, startSmoothScroll } from "@/lib/smooth";
 
 export function ResumeButton() {
   return (
@@ -21,6 +22,29 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
   const [query, setQuery] = useState("");
   const [copied, setCopied] = useState(false);
   const location = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+  const [tucked, setTucked] = useState(false);
+  useEffect(() => {
+    const stopScroll = startSmoothScroll();
+    const stopReveal = startReveal();
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 40);
+      // glass bar tucks away while reading downwards and returns on any upward scroll
+      if (Math.abs(y - last) > 6) {
+        setTucked(y > last && y > 240);
+        last = y;
+      }
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      stopScroll();
+      stopReveal();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
   useEffect(() => {
     setMenu(false);
     setCommand(false);
@@ -42,7 +66,7 @@ export function PortfolioShell({ children }: { children: ReactNode }) {
   }, []);
   return (
     <div className="shell">
-      <header className="site-header">
+      <header className="site-header" data-scrolled={scrolled} data-tucked={tucked && !menu && !command}>
         <Link to="/" className="brand">
           <span className="status-dot" />
           MAHIDHARA S.

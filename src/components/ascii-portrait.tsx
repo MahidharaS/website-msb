@@ -4,14 +4,7 @@ import { useEffect, useRef } from "react";
 // pixel's brightness, coloured along the portfolio palette. A draggable split (follows the
 // pointer on desktop) shows the real photo on one side and the "data" version on the other.
 const RAMP = " .,:;-=+*%#₹@";
-const PALETTE = [
-  "#4DA3FF",
-  "#9B7BFF",
-  "#FF5FA2",
-  "#FF6B4A",
-  "#FFB547",
-  "#C6F432",
-];
+const PALETTE = ["#8E949C", "#C9CDD2", "#F2F0EA", "#F2F0EA", "#DDE7B8", "#C6F432"];
 
 function hex(c: string) {
   const n = parseInt(c.slice(1), 16);

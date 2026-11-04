@@ -152,7 +152,7 @@ function World({ input }: { input: MutableRefObject<StoryInput> }) {
       const t0 = actT(ACTS - 1);
       const from = curve.getPointAt(t0, new THREE.Vector3());
       const dir = curve.getTangentAt(t0, new THREE.Vector3());
-      const forkColors = ["#4DA3FF", "#C6F432", "#FFB547"].map(
+      const forkColors = ["#F2F0EA", "#C6F432", "#C9D4E0"].map(
         (x) => new THREE.Color(x),
       );
       for (let k = 0; k < 3; k++) {
@@ -174,7 +174,7 @@ function World({ input }: { input: MutableRefObject<StoryInput> }) {
       }
     }
     // roads not taken: tangled, dim crimson
-    const crimson = new THREE.Color("#8B0D1A");
+    const crimson = new THREE.Color("#3a3d44");
     for (let g = 0; g < 7; g++) {
       const off = new THREE.Vector3(
         (r() - 0.5) * 16,

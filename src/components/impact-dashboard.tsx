@@ -12,15 +12,7 @@ import { CursorGlyph } from "./swarm-cursors";
 
 type Fn = (typeof dashboard.functions)[number];
 const SWARM_NAMES = ["EXCEL", "SQL", "POWER BI", "TABLEAU", "PYTHON", "DAX"];
-const SWARM_COLORS = [
-  "lime",
-  "sky",
-  "pink",
-  "amber",
-  "violet",
-  "coral",
-  "mint",
-];
+const SWARM_COLORS = ["lime", "paper", "paper", "paper", "paper", "paper"];
 const FN_COLOR: Record<string, string> = {
   ALL: "var(--c-lime)",
   SALES: "var(--c-coral)",
@@ -43,7 +35,7 @@ const OUTCOME_COLORS = [
   "var(--c-amber)",
 ];
 const RECORD_COLORS = ["var(--c-sky)", "var(--c-pink)", "var(--c-violet)"];
-const DONUT_COLORS = ["#C6F432", "#4DA3FF", "#FF5FA2", "#FFB547", "#9B7BFF"];
+const DONUT_COLORS = ["#C6F432", "#F2F0EA", "#A7A9A0", "#6E716B", "#3F413D"];
 const ease = (t: number) =>
   t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const clamp01 = (t: number) => Math.max(0, Math.min(1, t));

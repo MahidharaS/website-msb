@@ -285,7 +285,7 @@ export const storyline = [
     body: "Mechanical engineering taught me systems, constraints and tolerances: every output has a cause you can trace. I still debug business problems the way I was taught to debug machines.",
     lesson: "Find the mechanism, not the symptom.",
     proof: ["BE Mechanical Engineering"],
-    color: "#4DA3FF",
+    color: "#C9D4E0",
   },
   {
     id: "contact",
@@ -296,7 +296,7 @@ export const storyline = [
     body: "Straight out of college into live operations as a service advisor: real people, real vehicles, real deadlines. Engineering had answers; the front desk had questions nobody had written down.",
     lesson: "The problem is whatever the customer feels it is.",
     proof: ["Service operations", "Customer-facing"],
-    color: "#FFB547",
+    color: "#E2D6BE",
   },
   {
     id: "pause",
@@ -307,7 +307,7 @@ export const storyline = [
     body: "The pandemic delayed my next role by four months. No office, no shop floor, nothing to optimise but myself. It is the stretch of road where I decided data would be my lantern.",
     lesson: "Alone isn't lost.",
     proof: ["4 months on hold"],
-    color: "#8B0D1A",
+    color: "#8C8F96",
   },
   {
     id: "floor",
@@ -318,7 +318,7 @@ export const storyline = [
     body: "As a graduate engineer trainee I ran a 65-member shift. I built real-time production dashboards that exposed idle time and throughput gaps, and used SPC and visual management to fix recurring quality bottlenecks.",
     lesson: "Data only matters when someone acts on it.",
     proof: ["+10% shift output", "65-person shift", "SPC"],
-    color: "#FF6B4A",
+    color: "#E7D2C6",
   },
   {
     id: "pivot",
@@ -329,7 +329,7 @@ export const storyline = [
     body: "A PGDM in Business Analytics & Marketing, KPMG Business Analytics L1 & L2, and an internship mapping dataflows and 15+ user workflows across three hospital modules. I learned to ask what a number is for before I calculate it.",
     lesson: "Understand the workflow before designing the solution.",
     proof: ["PGDM Business Analytics", "KPMG BA L1 & L2", "15+ workflows"],
-    color: "#9B7BFF",
+    color: "#CFCBE0",
   },
   {
     id: "engine",
@@ -351,7 +351,7 @@ export const storyline = [
     body: "Analyst, engineer, operator, teacher of 200+ people. The next turn is data science: open questions, experiments, and models that explain why, not just what. I would like to walk it with a team that has hard problems.",
     lesson: "Bring me a messy problem.",
     proof: ["Data science", "LLMs · LoRA · RAG", "200+ trained"],
-    color: "#FF5FA2",
+    color: "#F2F0EA",
   },
 ] as const;
 

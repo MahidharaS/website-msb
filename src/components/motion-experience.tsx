@@ -216,13 +216,7 @@ export function MotionHero() {
   return (
     <section className="motion-hero">
       <div className="motion-stage hero-v2">
-        <div className="hero-grid mono" aria-hidden="true">
-          <span style={{ left: "38%", top: "14%" }}>[sales]</span>
-          <span style={{ left: "52%", top: "30%" }}>[operations]</span>
-          <span style={{ left: "44%", top: "58%" }}>[marketing]</span>
-          <span style={{ left: "58%", top: "8%" }}>[hr]</span>
-          <span style={{ left: "30%", top: "40%" }}>[analytics]</span>
-        </div>
+        
         <div className="motion-top mono">
           <span>
             <span className="status-dot" /> ANALYST → ML ENGINEER → DATA
@@ -234,7 +228,7 @@ export function MotionHero() {
           <div className="hero-lead">
             <p className="mono text-primary">MAHIDHARA S.</p>
             <p className="motion-kicker">
-              I DON'T JUST <span className="tint-sky">ANALYSE</span> PROBLEMS.
+              I DON'T JUST ANALYSE PROBLEMS.
             </p>
             <h1 className="display">
               I WORK
@@ -250,9 +244,9 @@ export function MotionHero() {
           </div>
           <div className="hero-side">
             <p className="motion-sub">
-              I connect <b className="tint-sky">data</b>,{" "}
-              <b className="tint-pink">people</b>, and{" "}
-              <b className="tint-amber">processes</b> to turn messy business
+              I connect <b>data</b>,{" "}
+              <b>people</b>, and{" "}
+              <b>processes</b> to turn messy business
               problems into measurable outcomes.
             </p>
             <div className="hero-actions">
