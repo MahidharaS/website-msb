@@ -10,6 +10,8 @@ I have also attached some references here. Based on these references, I want you
 
 This project was built with [Lovable](https://lovable.dev).
 
+**Run it locally:** see [LOCAL.md](LOCAL.md). **Deploy (Render + Hugging Face + Supabase):** see [DEPLOY.md](DEPLOY.md). **Chatbot backend:** [chatbot/](chatbot/).
+
 **Live app**: https://lime-and-heart-showcase.lovable.app
 
 ## Build with Lovable
@@ -22,7 +24,7 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Prefer working locally? See [LOCAL.md](LOCAL.md) — Bun or Docker, no npm needed. (Lovable default below.)
 
 ```sh
 git clone <this-repository-url>

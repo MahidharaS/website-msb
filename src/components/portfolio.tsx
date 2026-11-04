@@ -7,14 +7,14 @@ import {
   Check,
   Layers,
   List,
-  FlaskConical,
-  Users,
+    Users,
   BriefcaseBusiness,
   ExternalLink,
   Copy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { MotionHero, MotionJourney } from "@/components/motion-experience";
+import { MotionHero, MotionJourney, TerrainBackdrop } from "@/components/motion-experience";
+import { AskMahi } from "@/components/ask-mahi";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import {
   assets,
@@ -23,6 +23,8 @@ import {
   timeline,
   steps,
   sideBuilds,
+  pitch,
+  seeking,
   email,
   linkedin,
 } from "@/data/content";
@@ -76,6 +78,34 @@ export function Home() {
     <main>
       <MotionHero />
       <MotionJourney />
+      <section className="value" id="value" aria-labelledby="value-title">
+        <div className="section-top">
+          <div>
+            <p className="mono section-index">02 / THE PITCH</p>
+            <h2 className="section-heading" id="value-title">WHAT YOUR TEAM GETS.</h2>
+          </div>
+          <span className="mono text-muted-foreground hidden sm:block">NOT WHAT I CAN DO. WHAT YOU CAN USE.</span>
+        </div>
+        <div className="value-grid">
+          {pitch.map((p, i) => (
+            <article key={p.title} className="value-item">
+              <span className="mono num">0{i + 1}</span>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
+              <span className="mono proof">{p.proof}</span>
+            </article>
+          ))}
+        </div>
+        <div className="seeking">
+          <span className="mono text-primary">WHAT I'M LOOKING FOR</span>
+          <p>{seeking}</p>
+          <Button asChild>
+            <Link to="/lab">
+              Interview my AI <ArrowUpRight />
+            </Link>
+          </Button>
+        </div>
+      </section>
       <section className="metrics" aria-label="Headline contributions">
         {metrics.map((m) =>
           m.slug ? (
@@ -448,74 +478,13 @@ export function Approach() {
   );
 }
 export function Lab() {
-  const [signals, setSignals] = useState<boolean[]>([false, false, false, false, false]);
   const [project, setProject] = useState<(typeof sideBuilds)[number] | null>(null);
-  const labels = [
-    "Asked about fees",
-    "Requested callback",
-    "Mentioned job switch",
-    "No response ×3",
-    "Price objection in remarks",
-  ];
-  const weights = [20, 25, 15, -25, -15];
-  const score = Math.max(
-    0,
-    Math.min(100, 35 + signals.reduce((s, v, i) => s + (v ? (weights[i] ?? 0) : 0), 0)),
-  );
   return (
     <main>
-      <PageHeading
-        index="04 / THE LAB"
-        title={
-          <>
-            CURIOSITY.
-            <br />
-            <span>PUT TO WORK.</span>
-          </>
-        }
-      >
-        Side builds, experiments, and things I made to understand a problem better.
-      </PageHeading>
-      <div className="section-top">
-        <h2 className="section-heading">LEAD SCORE PLAYGROUND.</h2>
-        <FlaskConical className="text-primary" />
-      </div>
-      <p className="mono text-muted-foreground mb-5">
-        ILLUSTRATIVE DEMO — NOT REAL DATA OR THE PRODUCTION MODEL
-      </p>
-      <div className="lab-layout">
-        <div className="signals">
-          {labels.map((l, i) => (
-            <label className="signal" key={l}>
-              <input
-                type="checkbox"
-                checked={signals[i]}
-                onChange={() => setSignals((v) => v.map((s, j) => (j === i ? !s : s)))}
-              />
-              {l}
-            </label>
-          ))}
-        </div>
-        <div>
-          <div className="gauge">
-            <span className="display">{score}</span>
-            <span className="mono">{score >= 70 ? "HOT" : score >= 40 ? "WARM" : "COLD"} LEAD</span>
-          </div>
-          <div className="detail-box mono">
-            {signals.some(Boolean)
-              ? labels
-                  .filter((_, i) => signals[i])
-                  .map((l) => (
-                    <span key={l} className="text-primary block">
-                      {l}
-                    </span>
-                  ))
-              : "NO INTENT SIGNALS SELECTED"}
-          </div>
-        </div>
-      </div>
-      <section className="section">
-        <p className="mono section-index">SIDE BUILDS</p>
+      <TerrainBackdrop />
+      <AskMahi />
+      <section className="section relative z-[1]">
+        <p className="mono section-index">SIDE BUILDS · ALSO IN THE ASSISTANT'S KNOWLEDGE BASE</p>
         <div className="paths">
           {sideBuilds.map((p) => (
             <Button

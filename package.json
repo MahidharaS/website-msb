@@ -11,7 +11,10 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "local:dev": "bunx --bun vite dev --host 127.0.0.1 --port 5173",
+    "local:build": "NITRO_PRESET=bun bunx --bun vite build",
+    "local:start": "bun .output/server/index.mjs"
   },
   "overrides": {
     "rolldown": "1.2.1"

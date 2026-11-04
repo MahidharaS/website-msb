@@ -1,0 +1,19 @@
+# Everything on localhost without installing Node, npm or Python on your Mac:
+#   cp chatbot/.env.example chatbot/.env   (add your HF token)
+#   docker compose up --build
+# Website → http://localhost:3000   ·   Chat API → http://localhost:7860/health
+services:
+  web:
+    build:
+      context: .
+      args:
+        VITE_CHAT_API_URL: http://localhost:7860
+    ports: ["3000:3000"]
+    depends_on: [api]
+  api:
+    build: ./chatbot
+    ports: ["7860:7860"]
+    env_file: ./chatbot/.env
+    environment:
+      ALLOWED_ORIGINS: http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173
+    volumes: ["./chatbot/knowledge:/home/app/chatbot/knowledge:ro"]
