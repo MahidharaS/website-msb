@@ -26,6 +26,20 @@ Easiest: **Resend** (free, 100 emails/day).
 
 (Alternative: SMTP with a Gmail account + App Password, see `chatbot/.env.example`.)
 
+## 3b. Private chat history in your Drive (optional, recommended)
+Lets the assistant recognise a returning visitor who gives their name (and email) and pick up
+where they left off. Every chat is also saved there for you.
+1. Create a **private** folder, e.g. `Portfolio – chat history` (do not share it). Copy its id
+   from the URL (`drive.google.com/drive/folders/<id>`).
+2. script.google.com → New project → paste `chatbot/drive-history/Code.gs` → fill `FOLDER_ID`
+   and a long random `SECRET`.
+3. Deploy → New deployment → **Web app** → Execute as **Me**, Who has access **Anyone** → Deploy →
+   authorise → copy the URL ending in `/exec`.
+4. On the API set `HISTORY_WEBHOOK_URL` = that URL and `HISTORY_SECRET` = the same secret.
+
+Safety: the assistant only uses past chats as private notes (it never reads them back), and if a
+visitor gives only a name that we know with an email, it asks for the email before using them.
+
 ## 4. Render
 1. render.com → **New → Blueprint** → connect `MahidharaS/website-msb`. It reads `render.yaml` and
    creates two services: `ask-mahi-api` and `mahidhara-portfolio`.

@@ -12,7 +12,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
-from . import config, mailer
+from . import config, history, mailer
 from .agent import summarize
 
 log = logging.getLogger("ask-mahi.sessions")
@@ -56,7 +56,7 @@ async def flush(session_id: str, reason: str) -> bool:
     summary = await summarize(text_)
     when = datetime.fromtimestamp(s.started, tz=timezone.utc).strftime("%d %b %Y, %H:%M UTC")
     first_q = next((c for r, c in s.turns[start:] if r == "user"), "")[:70]
-    meta = "\n".join(f"{k}: {v}" for k, v in s.meta.items())
+    meta = "\n".join(f"{k}: {v}" for k, v in s.meta.items() if k != "visitor_notes")
     body = (
         f"Someone chatted with Mahi AI on your portfolio.\n\n"
         f"Started: {when}\nQuestions asked: {questions}\nEnded because: {reason}\nSession: {s.id}\n"
@@ -65,6 +65,8 @@ async def flush(session_id: str, reason: str) -> bool:
         f"FULL TRANSCRIPT\n---------------\n{text_}\n"
     )
     ok = await mailer.send(f"Portfolio chat: “{first_q}”", body)
+    who = s.meta.get("visitor_name", ""), s.meta.get("visitor_email", "")
+    await history.save(who[0], who[1], when, summary, text_)
     log.info("chat %s emailed=%s (%s)", s.id, ok, reason)
     return ok
 

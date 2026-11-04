@@ -102,7 +102,8 @@
     $("pills").innerHTML =
       pill("MODEL " + s.model, s.llm_key) + pill(s.llm_key ? "API KEY SET" : "NO LLM_API_KEY", s.llm_key) +
       pill("KNOWLEDGE: " + s.source + " · " + s.entries.length, s.entries.length > 0 && !s.error) +
-      pill(s.email ? "EMAIL ON" : "EMAIL OFF", s.email);
+      pill(s.email ? "EMAIL ON" : "EMAIL OFF", s.email) +
+      pill(s.visitor_memory ? "VISITOR MEMORY ON" : "VISITOR MEMORY OFF", s.visitor_memory);
     $("list").innerHTML = s.entries.map((e) => `<li><b>${e.title}</b> · ${e.type} · ${e.source}</li>`).join("") || "<li>Nothing yet.</li>";
     $("emailInfo").textContent = s.email ? `Contact messages and chat summaries go to ${s.notify}.` : "No mail provider set. Add RESEND_API_KEY (or SMTP_*) on the server.";
     if (s.error) say("Drive: " + s.error);

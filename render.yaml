@@ -38,5 +38,9 @@ services:
         sync: false
       - key: ADMIN_TOKEN
         generateValue: true
+      - key: HISTORY_WEBHOOK_URL
+        sync: false # Apps Script web-app URL (chatbot/drive-history/Code.gs)
+      - key: HISTORY_SECRET
+        sync: false
       - key: ALLOWED_ORIGINS
         sync: false # e.g. https://mahidhara-portfolio.onrender.com,https://lime-and-heart-showcase.lovable.app

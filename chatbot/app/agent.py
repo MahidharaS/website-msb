@@ -67,7 +67,7 @@ def _sources(entries) -> list[dict]:
     return out[:4]
 
 
-async def answer_stream(question: str, history: list[dict]) -> AsyncIterator[dict]:
+async def answer_stream(question: str, history: list[dict], visitor_notes: str = "") -> AsyncIterator[dict]:
     await store.refresh()
     prior = next((h["content"] for h in reversed(history) if h.get("role") == "user"), "")
     query = f"{prior}\n{question}" if prior and len(question) < 60 else question
@@ -75,7 +75,14 @@ async def answer_stream(question: str, history: list[dict]) -> AsyncIterator[dic
     used = list(found)
     context = "\n\n---\n\n".join(e.text() for e in found) or "(nothing matched; use the tools)"
 
-    messages = [SystemMessage(SYSTEM.format(context=context))]
+    system = SYSTEM.format(context=context)
+    if visitor_notes:
+        system += (
+            "\n\nPRIVATE NOTES about this visitor (from earlier visits). Use them to welcome them back and "
+            "avoid re-asking, but never quote or list them; only refer to things the visitor brings up "
+            "themselves:\n" + visitor_notes
+        )
+    messages = [SystemMessage(system)]
     for h in history[-8:]:
         c = str(h.get("content", ""))[:2000]
         messages.append(HumanMessage(c) if h.get("role") == "user" else AIMessage(c))

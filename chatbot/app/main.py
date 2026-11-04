@@ -23,7 +23,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
-from . import config, mailer, sessions
+from . import config, history, mailer, sessions
 from .agent import answer_stream
 from .knowledge import store
 from .mcp_server import mcp
@@ -119,19 +119,30 @@ async def health():
         "llm_key": bool(config.LLM_API_KEY),
         "knowledge": {"source": store.source, "entries": len(store.entries), "error": store.error or None},
         "email": mailer.configured(),
+        "visitor_memory": history.enabled(),
     }
 
 
 @app.post("/chat/stream")
 async def chat_stream(body: ChatRequest, request: Request):
     rate_limit(request)
-    history = [t.model_dump() for t in body.history]
+    history_ = [t.model_dump() for t in body.history]
     sessions.record(body.session_id, "user", body.message, _meta(body.meta, request))
+    s = sessions.SESSIONS[body.session_id]
+    # returning visitor: once they give a name/email, load private notes from earlier chats
+    found = history.detect(body.message)
+    if found.get("name") and "visitor_name" not in s.meta:
+        s.meta["visitor_name"] = found["name"]
+    if found.get("email") and "visitor_email" not in s.meta:
+        s.meta["visitor_email"] = found["email"]
+    if found and history.enabled():
+        s.meta["visitor_notes"] = await history.lookup(s.meta.get("visitor_name", ""), s.meta.get("visitor_email", ""))
+    notes = s.meta.get("visitor_notes", "")
 
     async def events():
         answer = ""
         try:
-            async for ev in answer_stream(body.message, history):
+            async for ev in answer_stream(body.message, history_, notes):
                 if ev["type"] == "token":
                     answer += ev["content"]
                 yield f"data: {json.dumps(ev)}\n\n"
@@ -206,6 +217,7 @@ async def admin_status(authorization: str | None = Header(default=None)):
         "model": config.LLM_MODEL,
         "llm_key": bool(config.LLM_API_KEY),
         "email": mailer.configured(),
+        "visitor_memory": history.enabled(),
         "notify": config.NOTIFY_EMAIL,
     }
 

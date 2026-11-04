@@ -39,6 +39,10 @@ SMTP_USER = env("SMTP_USER")
 SMTP_PASS = env("SMTP_PASS")
 CHAT_IDLE_MINUTES = float(env("CHAT_IDLE_MINUTES", "10"))
 
+# ---------- Private visitor memory (Apps Script in drive-history/) ----------
+HISTORY_WEBHOOK_URL = env("HISTORY_WEBHOOK_URL")
+HISTORY_SECRET = env("HISTORY_SECRET")
+
 # ---------- Web / admin ----------
 ALLOWED_ORIGINS = [o.strip() for o in env("ALLOWED_ORIGINS", "*").split(",") if o.strip()]
 RATE_LIMIT = int(env("RATE_LIMIT_PER_MINUTE", "20"))

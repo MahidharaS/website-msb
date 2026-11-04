@@ -11,6 +11,9 @@ FastAPI service behind the website's **Ask Mahi** page and contact form.
   as an MCP server at `/mcp/` for ChatGPT, Claude or other agents.
 - **Email:** contact-form messages and a summary + transcript of every chat go to `NOTIFY_EMAIL`
   (Resend or SMTP). Chats are emailed when the visitor leaves or after 10 idle minutes.
+- **Visitor memory (optional):** chats are saved per visitor to a private Drive folder via a
+  small Apps Script (`drive-history/Code.gs`); a returning visitor who gives their name/email is
+  welcomed back using private notes that are never quoted back.
 - **Owner page:** `/admin` to connect the Drive folder, sync, see what the assistant knows and
   send a test email.
 
