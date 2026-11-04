@@ -323,8 +323,8 @@ export function AskMahi() {
           </div>
           <p className="ask-note">
             AI can be wrong; confirm anything important with Mahidhara at{" "}
-            {email}. Conversations here are shared with Mahidhara so he can
-            follow up.
+            {email}. Conversations are shared with Mahidhara so he can follow
+            up, and remembered for next time if you tell me your name.
           </p>
         </form>
       </section>
