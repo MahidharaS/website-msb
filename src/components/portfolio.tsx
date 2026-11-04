@@ -81,7 +81,7 @@ export function Home() {
       <section className="value" id="value" aria-labelledby="value-title">
         <div className="section-top">
           <div>
-            <p className="mono section-index">02 / THE PITCH</p>
+            <p className="mono section-index">05 / THE PITCH</p>
             <h2 className="section-heading" id="value-title">WHAT YOUR TEAM GETS.</h2>
           </div>
           <span className="mono text-muted-foreground hidden sm:block">NOT WHAT I CAN DO. WHAT YOU CAN USE.</span>

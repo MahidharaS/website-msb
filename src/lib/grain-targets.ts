@@ -449,3 +449,264 @@ export async function loadImageFormation(
   if (!res.ok) throw new Error(`Failed to load ${url}`);
   return imageFormation(await res.arrayBuffer(), opts);
 }
+
+/**
+ * Sample a rasterised DOM layer into grains. Pixel coordinates map onto the z=0 plane of a
+ * camera at z=8 with a 48° vertical field of view, so grains land exactly where the DOM was.
+ */
+export function canvasFormation(
+  image: ImageData,
+  scale: number,
+  stageW: number,
+  stageH: number,
+): Formation {
+  const b = new Builder(91);
+  const { data, width, height } = image;
+  const weights = new Float32Array(width * height);
+  let total = 0;
+  for (let i = 0; i < width * height; i++) {
+    const a = data[i * 4 + 3]! / 255;
+    const l = (data[i * 4]! + data[i * 4 + 1]! + data[i * 4 + 2]!) / 765;
+    const w = a * (0.25 + l);
+    weights[i] = w;
+    total += w;
+  }
+  if (total <= 0) return dashboardFormation();
+  const cdf = new Float32Array(width * height);
+  let acc = 0;
+  for (let i = 0; i < weights.length; i++) cdf[i] = acc += weights[i]! / total;
+  const k = (2 * 8 * Math.tan((24 * Math.PI) / 180)) / stageH; // world units per css px
+  for (let n = 0; n < GRAIN_COUNT; n++) {
+    const u = b.r();
+    let lo = 0,
+      hi = cdf.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (cdf[mid]! < u) lo = mid + 1;
+      else hi = mid;
+    }
+    const px = (lo % width) + b.r(),
+      py = Math.floor(lo / width) + b.r();
+    const o = lo * 4;
+    const c: RGB = [data[o]! / 255, data[o + 1]! / 255, data[o + 2]! / 255];
+    b.push(
+      (px / scale - stageW / 2) * k,
+      -(py / scale - stageH / 2) * k,
+      (b.r() - 0.5) * 0.04,
+      c,
+      1.1,
+    );
+  }
+  return b.done();
+}
+
+/** Database as a Rubik's cube: 27 glass cubies with bright edges. Twisting happens in the shader. */
+export const CUBIE = 0.66;
+export const CUBE_GAP = 0.07;
+export function cubeFormation(): Formation {
+  const b = new Builder(51);
+  const step = CUBIE + CUBE_GAP,
+    h = CUBIE / 2;
+  for (let i = -1; i <= 1; i++)
+    for (let j = -1; j <= 1; j++)
+      for (let k = -1; k <= 1; k++) {
+        const cx = i * step,
+          cy = j * step,
+          cz = k * step;
+        // 12 edges
+        for (const [a, c] of [
+          [
+            [-h, -h, -h],
+            [h, -h, -h],
+          ],
+          [
+            [-h, h, -h],
+            [h, h, -h],
+          ],
+          [
+            [-h, -h, h],
+            [h, -h, h],
+          ],
+          [
+            [-h, h, h],
+            [h, h, h],
+          ],
+          [
+            [-h, -h, -h],
+            [-h, h, -h],
+          ],
+          [
+            [h, -h, -h],
+            [h, h, -h],
+          ],
+          [
+            [-h, -h, h],
+            [-h, h, h],
+          ],
+          [
+            [h, -h, h],
+            [h, h, h],
+          ],
+          [
+            [-h, -h, -h],
+            [-h, -h, h],
+          ],
+          [
+            [h, -h, -h],
+            [h, -h, h],
+          ],
+          [
+            [-h, h, -h],
+            [-h, h, h],
+          ],
+          [
+            [h, h, -h],
+            [h, h, h],
+          ],
+        ] as [V3, V3][])
+          b.line(
+            [cx + a[0], cy + a[1], cz + a[2]],
+            [cx + c[0], cy + c[1], cz + c[2]],
+            70,
+            PAPER,
+            1.05,
+            0.003,
+          );
+        // faces: sparse glass, brighter on the outside of the cube
+        for (let f = 0; f < 6; f++) {
+          const axis = f >> 1,
+            sign = f & 1 ? 1 : -1;
+          const outer = [i, j, k][axis] === sign;
+          const n = outer ? 130 : 12;
+          for (let q = 0; q < n; q++) {
+            const p: V3 = [cx, cy, cz];
+            const u = (b.r() - 0.5) * CUBIE,
+              v = (b.r() - 0.5) * CUBIE;
+            const o = [0, 1, 2].filter((x) => x !== axis) as [number, number];
+            p[axis] = p[axis]! + sign * h;
+            p[o[0]] = p[o[0]]! + u;
+            p[o[1]] = p[o[1]]! + v;
+            // "data rows": stripes of brighter grains on the outer faces
+            const stripe =
+              outer && Math.abs((((v / CUBIE + 0.5) * 5) % 1) - 0.5) < 0.12;
+            b.push(p[0], p[1], p[2], stripe ? LIME : OLIVE, stripe ? 1 : 1.6);
+          }
+        }
+      }
+  // data streaming through the core
+  for (let q = 0; q < 2600; q++) {
+    const t = b.r(),
+      a = b.r() * Math.PI * 2,
+      r = 0.1 + b.r() * 0.5;
+    b.push(Math.cos(a) * r, (t - 0.5) * 2.3, Math.sin(a) * r, LIME, 0.75);
+  }
+  const s = step * 1.5 + 0.05;
+  b.anchors.push(
+    [0, s, 0],
+    [s, 0, 0],
+    [0, 0, s],
+    [-s, 0, 0],
+    [0, 0, -s],
+    [0, -s, 0],
+  );
+  return b.done();
+}
+
+/** Embeddings: neurons in clusters, joined to their nearest neighbours. */
+export function graphFormation(): Formation {
+  const b = new Builder(61);
+  const centers: V3[] = [];
+  for (let c = 0; c < 6; c++) {
+    const a = (c / 6) * Math.PI * 2 + 0.3;
+    centers.push([
+      Math.cos(a) * 2.1,
+      Math.sin(a) * 1.35 + (c % 2 ? 0.25 : -0.25),
+      Math.sin(a * 2) * 0.9,
+    ]);
+  }
+  const nodes: V3[] = [];
+  centers.forEach((c) => {
+    for (let n = 0; n < 22; n++)
+      nodes.push([
+        c[0] + b.gauss() * 0.42,
+        c[1] + b.gauss() * 0.34,
+        c[2] + b.gauss() * 0.4,
+      ]);
+  });
+  for (let n = 0; n < 18; n++)
+    nodes.push([(b.r() - 0.5) * 4, (b.r() - 0.5) * 2.6, (b.r() - 0.5) * 1.5]);
+  const d2 = (a: V3, c: V3) =>
+    (a[0] - c[0]) ** 2 + (a[1] - c[1]) ** 2 + (a[2] - c[2]) ** 2;
+  const seen = new Set<string>();
+  nodes.forEach((a, i) => {
+    const near = nodes
+      .map((c, j) => [d2(a, c), j] as const)
+      .filter(([, j]) => j !== i)
+      .sort((x, y) => x[0] - y[0])
+      .slice(0, 3);
+    for (const [, j] of near) {
+      const key = i < j ? `${i}-${j}` : `${j}-${i}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      b.line(a, nodes[j]!, 55, LIME, 0.55, 0.004);
+    }
+  });
+  // a few long links between clusters
+  for (let c = 0; c < 6; c++)
+    b.line(centers[c]!, centers[(c + 2) % 6]!, 160, PAPER, 0.35, 0.004);
+  nodes.forEach((n, i) =>
+    b.sphere(
+      n[0],
+      n[1],
+      n[2],
+      i % 9 === 0 ? 0.075 : 0.05,
+      i % 9 === 0 ? 150 : 90,
+      i % 9 === 0 ? LIME : PAPER,
+      1,
+    ),
+  );
+  centers.forEach((c) => b.anchors.push([c[0], c[1] + 0.55, c[2]]));
+  return b.done();
+}
+
+/** Deep network; the shader reveals it one layer at a time from left to right. */
+export const NETWORK_LAYERS = [5, 8, 11, 11, 8, 5];
+export const NETWORK_X0 = -2.1;
+export const NETWORK_DX = 0.84;
+export function networkFormation(): Formation {
+  const b = new Builder(71);
+  const nodes: V3[][] = NETWORK_LAYERS.map((n, li) =>
+    Array.from(
+      { length: n },
+      (_, k) =>
+        [
+          NETWORK_X0 + li * NETWORK_DX,
+          (k - (n - 1) / 2) * (n > 8 ? 0.34 : 0.46),
+          Math.sin(k * 1.1 + li) * 0.3,
+        ] as V3,
+    ),
+  );
+  for (let li = 0; li < nodes.length - 1; li++)
+    for (const a of nodes[li]!)
+      for (const c of nodes[li + 1]!) b.line(a, c, 34, LIME, 0.45, 0.005);
+  nodes.forEach((layer, li) =>
+    layer.forEach((n) =>
+      b.sphere(
+        n[0],
+        n[1],
+        n[2],
+        0.085,
+        220,
+        li === 0 || li === nodes.length - 1 ? LIME : PAPER,
+        1,
+      ),
+    ),
+  );
+  // anchors: input layer (5), selected hidden nodes (4), output layer (5)
+  nodes[0]!.forEach((n) => b.anchors.push(n));
+  [nodes[2]![2]!, nodes[2]![8]!, nodes[3]![4]!, nodes[4]![6]!].forEach((n) =>
+    b.anchors.push(n),
+  );
+  nodes[5]!.forEach((n) => b.anchors.push(n));
+  return b.done();
+}
