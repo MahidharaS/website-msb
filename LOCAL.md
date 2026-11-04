@@ -52,17 +52,19 @@ Production-like run:
 bun run local:build && PORT=3000 bun run local:start      # http://localhost:3000
 ```
 
-### Chat backend for Option B (Python, already on macOS)
+### Chat backend (Python, already on macOS)
 
 ```bash
 cd chatbot
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env                      # paste your HF token into LLM_API_KEY
+cp .env.example .env                      # paste your nvapi-… key into LLM_API_KEY
 uvicorn app.main:app --reload --port 7860
 ```
 
-Or run only the backend in Docker: `cd chatbot && docker compose up --build`.
+Then put `VITE_CHAT_API_URL=http://localhost:7860` in the website's `.env.local` and restart
+`bun run local:dev`. Owner page: http://localhost:7860/admin (uses `ADMIN_TOKEN` from `.env`).
+Without a mail provider in `.env`, emails are printed in the backend terminal instead of sent.
 
 ---
 
@@ -71,15 +73,10 @@ Or run only the backend in Docker: `cd chatbot && docker compose up --build`.
 If `VITE_CHAT_API_URL` is empty or the backend is off, Ask Mahi switches to
 **offline mode** and answers from `src/data/content.ts` (it says so on screen).
 
-## Fully local model (no token)
+## Other models
 
-Install [Ollama](https://ollama.com), run `ollama pull qwen2.5:3b`, and in `chatbot/.env`:
-
-```
-LLM_BASE_URL=http://localhost:11434/v1        # Docker option: http://host.docker.internal:11434/v1
-LLM_API_KEY=ollama
-LLM_MODEL=qwen2.5:3b
-```
+Any OpenAI-compatible endpoint works by changing `LLM_BASE_URL`, `LLM_API_KEY` and `LLM_MODEL`
+in `chatbot/.env` (NVIDIA is the default; Hugging Face or a local Ollama also work).
 
 ## Resume locally
 

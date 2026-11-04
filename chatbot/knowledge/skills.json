@@ -1,0 +1,49 @@
+{
+  "entries": [
+    {
+      "type": "skill",
+      "title": "Analytics & BI",
+      "summary": "Excel, SQL, Power BI, Tableau, KPI design, data lineage, dashboards, data storytelling.",
+      "tags": [
+        "Excel",
+        "SQL",
+        "Power BI",
+        "Tableau"
+      ]
+    },
+    {
+      "type": "skill",
+      "title": "Machine learning",
+      "summary": "Python, NLP, deep learning, artificial neural networks, feature engineering, model comparison, MLflow tracking and serving, API data pipelines.",
+      "tags": [
+        "Python",
+        "NLP",
+        "deep learning",
+        "MLflow"
+      ]
+    },
+    {
+      "type": "skill",
+      "title": "LLMs & AI engineering",
+      "summary": "LLM fine-tuning with LoRA and QLoRA, retrieval-augmented generation, vector databases, LangChain, LangSmith tracing and evaluation, MCP tools.",
+      "tags": [
+        "LoRA",
+        "QLoRA",
+        "RAG",
+        "LangChain",
+        "LangSmith",
+        "MCP"
+      ]
+    },
+    {
+      "type": "skill",
+      "title": "Business & leadership",
+      "summary": "Requirements gathering, acceptance criteria, UAT, process mapping, SPC, leading a 10-person unit and earlier a 65-person shift; worked across sales, operations, marketing and HR.",
+      "tags": [
+        "leadership",
+        "business analysis",
+        "process"
+      ]
+    }
+  ]
+}

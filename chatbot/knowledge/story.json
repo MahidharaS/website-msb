@@ -1,0 +1,11 @@
+{
+  "entries": [
+    {
+      "type": "story",
+      "title": "Storyline: Alone, but not lost",
+      "summary": "One road, seven turns: engineer at NIE Mysore, first contact at URS Cars, the COVID pause, the Triton shop floor, the pivot through RIMS/KPMG/Pepino, the engine at Digital Maven, and the next branch into data science.",
+      "details": "Lessons along the way: find the mechanism, not the symptom; the problem is whatever the customer feels it is; data only matters when someone acts on it; understand the workflow before designing the solution; a model is only useful when it changes a real decision.",
+      "url": "/story"
+    }
+  ]
+}

@@ -1565,3 +1565,4 @@ a, button { transition: color .45s var(--ease), background-color .45s var(--ease
 .hero-lead h1 { letter-spacing: -.045em; }
 .hero-lead h1 .sel { padding: 0 12px 4px; margin-left: -12px; }
 .tool-track { animation-duration: 60s; }
+.hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }

@@ -1,16 +1,7 @@
-# Local only: `docker compose up` in chatbot/ → API on http://localhost:7860
-# With `--profile ollama` a local model runs too (no API key needed):
-#   docker compose --profile ollama up -d && docker compose exec ollama ollama pull qwen2.5:3b
+# Backend only: `docker compose up --build` in chatbot/ → http://localhost:7860/health
 services:
   api:
     build: .
     ports: ["7860:7860"]
     env_file: .env
     volumes: ["./knowledge:/home/app/chatbot/knowledge:ro"]
-  ollama:
-    profiles: ["ollama"]
-    image: ollama/ollama:latest
-    ports: ["11434:11434"]
-    volumes: ["ollama:/root/.ollama"]
-volumes:
-  ollama: {}

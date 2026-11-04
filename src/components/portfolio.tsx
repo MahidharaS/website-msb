@@ -19,6 +19,7 @@ import {
   TerrainBackdrop,
 } from "@/components/motion-experience";
 import { AskMahi } from "@/components/ask-mahi";
+import { sendContact } from "@/lib/answer-engine";
 import { StoryPath } from "@/components/story-path";
 import {
   Dialog,
@@ -658,6 +659,9 @@ export function Contact() {
   const [address, setAddress] = useState("");
   const [prepared, setPrepared] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [delivered, setDelivered] = useState(false);
+  const [trap, setTrap] = useState("");
   const subject = encodeURIComponent(`Portfolio inquiry: ${who}`);
   const body = encodeURIComponent(
     `Hi Mahi,\n\nI'm ${name} (${address}).\nI'm reaching out as: ${who}.\nAreas: ${domains.join(", ")}\n\n${problem}\n\nThanks,\n${name}`,
@@ -678,9 +682,25 @@ export function Contact() {
       <div className="contact-layout">
         <form
           className="contact-form"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
-            setPrepared(true);
+            setSending(true);
+            try {
+              const r = await sendContact({
+                who,
+                areas: domains,
+                message: problem,
+                name,
+                email: address,
+                website: trap,
+              });
+              setDelivered(r.delivered);
+            } catch {
+              setDelivered(false);
+            } finally {
+              setSending(false);
+              setPrepared(true);
+            }
           }}
         >
           <div className="progress">
@@ -689,7 +709,15 @@ export function Contact() {
             ))}
           </div>
           <span className="mono text-primary">0{step + 1} / 03</span>
-          {prepared ? (
+          {prepared && delivered ? (
+            <>
+              <h2 className="display">GOT IT. THANK YOU.</h2>
+              <p className="text-muted-foreground leading-7">
+                Your message is in my inbox. I'll reply to {address} personally,
+                usually within a day or two.
+              </p>
+            </>
+          ) : prepared ? (
             <>
               <h2 className="display">LET'S GET IT TO MY INBOX.</h2>
               <p className="text-muted-foreground leading-7">
@@ -777,6 +805,15 @@ export function Contact() {
                       autoComplete="name"
                     />
                   </label>
+                  <input
+                    className="hp-field"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    value={trap}
+                    onChange={(e) => setTrap(e.target.value)}
+                    name="website"
+                  />
                   <label>
                     Your email
                     <input
@@ -807,8 +844,11 @@ export function Contact() {
                     Continue <ArrowRight />
                   </Button>
                 ) : (
-                  <Button type="submit">
-                    Prepare email <ArrowUpRight />
+                  <Button
+                    type="submit"
+                    disabled={sending || !name.trim() || !address.trim()}
+                  >
+                    {sending ? "Sending…" : "Send"} <ArrowUpRight />
                   </Button>
                 )}
               </div>

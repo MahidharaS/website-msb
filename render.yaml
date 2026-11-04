@@ -1,4 +1,4 @@
-# Render Blueprint for the portfolio frontend. Builds the root Dockerfile (Bun, no npm).
+# Render Blueprint: website + Ask Mahi API. Render → New → Blueprint → pick this repo.
 # Lovable keeps building its own way; this file is only read by Render.
 services:
   - type: web
@@ -10,8 +10,33 @@ services:
     envVars:
       - key: PORT
         value: "3000"
-      # Build-time values: set them, then redeploy. Render passes env vars as Docker build args.
+      # Build-time: the API's public URL, e.g. https://ask-mahi-api.onrender.com (redeploy after setting)
       - key: VITE_CHAT_API_URL
-        sync: false # e.g. https://<your-hf-user>-ask-mahi.hf.space
+        sync: false
       - key: VITE_RESUME_URL
         sync: false
+
+  - type: web
+    name: ask-mahi-api
+    runtime: docker
+    plan: free
+    rootDir: chatbot
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: LLM_BASE_URL
+        value: https://integrate.api.nvidia.com/v1
+      - key: LLM_MODEL
+        value: nvidia/nemotron-3.5-lightning-30b-a3b
+      - key: LLM_API_KEY
+        sync: false # your nvapi-… key
+      - key: DRIVE_FOLDER_URL
+        sync: false
+      - key: NOTIFY_EMAIL
+        value: mahidhara.s@outlook.com
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ADMIN_TOKEN
+        generateValue: true
+      - key: ALLOWED_ORIGINS
+        sync: false # e.g. https://mahidhara-portfolio.onrender.com,https://lime-and-heart-showcase.lovable.app
