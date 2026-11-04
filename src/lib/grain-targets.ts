@@ -18,6 +18,15 @@ const LIME: RGB = [0.776, 0.957, 0.196];
 const PAPER: RGB = [0.949, 0.941, 0.918];
 const OLIVE: RGB = [0.29, 0.353, 0.07];
 const ASH: RGB = [0.45, 0.46, 0.43];
+// accent family (matches --c-* tokens in styles.css)
+const SKY: RGB = [0.3, 0.64, 1];
+const VIOLET: RGB = [0.61, 0.48, 1];
+const PINK: RGB = [1, 0.37, 0.64];
+const CORAL: RGB = [1, 0.42, 0.29];
+const AMBER: RGB = [1, 0.71, 0.28];
+const MINT: RGB = [0.24, 0.86, 0.59];
+const SPECTRUM: RGB[] = [SKY, VIOLET, PINK, CORAL, AMBER, LIME];
+const FACE_COLORS: RGB[] = [CORAL, AMBER, SKY, MINT, PINK, VIOLET];
 type RGB = [number, number, number];
 type V3 = [number, number, number];
 
@@ -577,7 +586,7 @@ export function cubeFormation(): Formation {
           const axis = f >> 1,
             sign = f & 1 ? 1 : -1;
           const outer = [i, j, k][axis] === sign;
-          const n = outer ? 130 : 12;
+          const n = outer ? 175 : 12;
           for (let q = 0; q < n; q++) {
             const p: V3 = [cx, cy, cz];
             const u = (b.r() - 0.5) * CUBIE,
@@ -587,9 +596,17 @@ export function cubeFormation(): Formation {
             p[o[0]] = p[o[0]]! + u;
             p[o[1]] = p[o[1]]! + v;
             // "data rows": stripes of brighter grains on the outer faces
+            // each outer face of the cube carries its own colour, like a Rubik's cube
             const stripe =
               outer && Math.abs((((v / CUBIE + 0.5) * 5) % 1) - 0.5) < 0.12;
-            b.push(p[0], p[1], p[2], stripe ? LIME : OLIVE, stripe ? 1 : 1.6);
+            const fc = FACE_COLORS[f]!;
+            b.push(
+              p[0],
+              p[1],
+              p[2],
+              outer ? fc : OLIVE,
+              outer ? (stripe ? 1.2 : 0.95) : 1.6,
+            );
           }
         }
       }
@@ -625,7 +642,10 @@ export function graphFormation(): Formation {
     ]);
   }
   const nodes: V3[] = [];
-  centers.forEach((c) => {
+  const nodeColor: RGB[] = [];
+  centers.forEach((c, ci) => {
+    for (let n = 0; n < 22; n++)
+      nodeColor.push(SPECTRUM[ci % SPECTRUM.length]!);
     for (let n = 0; n < 22; n++)
       nodes.push([
         c[0] + b.gauss() * 0.42,
@@ -648,7 +668,7 @@ export function graphFormation(): Formation {
       const key = i < j ? `${i}-${j}` : `${j}-${i}`;
       if (seen.has(key)) continue;
       seen.add(key);
-      b.line(a, nodes[j]!, 55, LIME, 0.55, 0.004);
+      b.line(a, nodes[j]!, 55, nodeColor[i] ?? PAPER, 0.5, 0.004);
     }
   });
   // a few long links between clusters
@@ -661,7 +681,7 @@ export function graphFormation(): Formation {
       n[2],
       i % 9 === 0 ? 0.075 : 0.05,
       i % 9 === 0 ? 150 : 90,
-      i % 9 === 0 ? LIME : PAPER,
+      i % 9 === 0 ? PAPER : (nodeColor[i] ?? PAPER),
       1,
     ),
   );
@@ -688,7 +708,8 @@ export function networkFormation(): Formation {
   );
   for (let li = 0; li < nodes.length - 1; li++)
     for (const a of nodes[li]!)
-      for (const c of nodes[li + 1]!) b.line(a, c, 34, LIME, 0.45, 0.005);
+      for (const c of nodes[li + 1]!)
+        b.line(a, c, 34, SPECTRUM[li % SPECTRUM.length]!, 0.42, 0.005);
   nodes.forEach((layer, li) =>
     layer.forEach((n) =>
       b.sphere(
@@ -697,7 +718,9 @@ export function networkFormation(): Formation {
         n[2],
         0.085,
         220,
-        li === 0 || li === nodes.length - 1 ? LIME : PAPER,
+        li === 0 || li === nodes.length - 1
+          ? SPECTRUM[li % SPECTRUM.length]!
+          : PAPER,
         1,
       ),
     ),

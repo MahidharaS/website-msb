@@ -11,7 +11,8 @@ import {
 import { ArrowDown, ArrowUpRight, Pause, Play } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { journeyChapters } from "@/data/content";
+import { cases, journeyChapters } from "@/data/content";
+import { AsciiPortrait } from "./ascii-portrait";
 import { canvasFormation } from "@/lib/grain-targets";
 import { rasterizeDashboard } from "@/lib/dashboard-raster";
 import {
@@ -153,24 +154,75 @@ function SceneCanvas({
 
 /* ---------------------------------------------------------------- hero */
 
-export function MotionHero() {
-  const photo = useRef<HTMLDivElement>(null);
+const LESSONS = cases.map((c) => ({
+  lesson: c.lesson,
+  where: c.company.split(" · ")[0]!,
+}));
+const TOOLS = [
+  "Excel",
+  "SQL",
+  "Power BI",
+  "Tableau",
+  "Python",
+  "NLP",
+  "Deep learning",
+  "MLflow",
+  "LoRA · QLoRA",
+  "LangChain",
+  "LangSmith",
+  "RAG",
+  "Vector DB",
+  "Hugging Face",
+  "Supabase",
+];
+
+function LessonCard() {
+  const [i, setI] = useState(0);
+  const n = LESSONS.length;
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = window.setInterval(() => setI((v) => (v + 1) % n), 6000);
+    return () => clearInterval(t);
+  }, [n, i]);
+  const item = LESSONS[i]!;
   return (
-    <section
-      className="motion-hero"
-      onPointerMove={(e) => {
-        const r = e.currentTarget.getBoundingClientRect();
-        photo.current?.style.setProperty(
-          "--px",
-          String((e.clientX - r.left) / r.width - 0.5),
-        );
-        photo.current?.style.setProperty(
-          "--py",
-          String((e.clientY - r.top) / r.height - 0.5),
-        );
-      }}
-    >
-      <div className="motion-stage">
+    <article className="bento bento-lesson" aria-live="polite">
+      <div className="bento-lesson-nav">
+        <button
+          type="button"
+          aria-label="Previous lesson"
+          onClick={() => setI((i - 1 + n) % n)}
+        >
+          ←
+        </button>
+        <span className="mono">
+          LESSON 0{i + 1} / 0{n}
+        </span>
+        <button
+          type="button"
+          aria-label="Next lesson"
+          onClick={() => setI((i + 1) % n)}
+        >
+          →
+        </button>
+      </div>
+      <p key={i}>“{item.lesson}”</p>
+      <span className="mono bento-foot">{item.where}</span>
+    </article>
+  );
+}
+
+export function MotionHero() {
+  return (
+    <section className="motion-hero">
+      <div className="motion-stage hero-v2">
+        <div className="hero-grid mono" aria-hidden="true">
+          <span style={{ left: "38%", top: "14%" }}>[sales]</span>
+          <span style={{ left: "52%", top: "30%" }}>[operations]</span>
+          <span style={{ left: "44%", top: "58%" }}>[marketing]</span>
+          <span style={{ left: "58%", top: "8%" }}>[hr]</span>
+          <span style={{ left: "30%", top: "40%" }}>[analytics]</span>
+        </div>
         <div className="motion-top mono">
           <span>
             <span className="status-dot" /> ANALYST → ML ENGINEER → DATA
@@ -178,45 +230,92 @@ export function MotionHero() {
           </span>
           <span>BANGALORE, INDIA ↗</span>
         </div>
-        <div className="motion-hero-copy">
-          <p className="mono text-primary">MAHIDHARA S.</p>
-          <p className="motion-kicker">I DON'T JUST ANALYSE PROBLEMS.</p>
-          <h1 className="display">
-            I WORK
-            <br />
-            <span>ON THEM.</span>
-          </h1>
-          <p className="motion-sub">
-            I connect data, people, and processes to turn messy business
-            problems into measurable outcomes.
-          </p>
-          <div className="hero-actions">
-            <Button asChild size="lg">
-              <Link to="/work">
-                See the work <ArrowUpRight />
-              </Link>
-            </Button>
-            <Button asChild variant="ghost">
-              <Link to="/lab">
-                Ask my AI <ArrowUpRight />
-              </Link>
-            </Button>
+        <div className="hero-main">
+          <div className="hero-lead">
+            <p className="mono text-primary">MAHIDHARA S.</p>
+            <p className="motion-kicker">
+              I DON'T JUST <span className="tint-sky">ANALYSE</span> PROBLEMS.
+            </p>
+            <h1 className="display">
+              I WORK
+              <br />
+              <span className="sel">
+                ON THEM.
+                <i aria-hidden="true" />
+                <i aria-hidden="true" />
+                <i aria-hidden="true" />
+                <i aria-hidden="true" />
+              </span>
+            </h1>
+          </div>
+          <div className="hero-side">
+            <p className="motion-sub">
+              I connect <b className="tint-sky">data</b>,{" "}
+              <b className="tint-pink">people</b>, and{" "}
+              <b className="tint-amber">processes</b> to turn messy business
+              problems into measurable outcomes.
+            </p>
+            <div className="hero-actions">
+              <Button asChild size="lg">
+                <Link to="/work">
+                  See the work <ArrowUpRight />
+                </Link>
+              </Button>
+              <Button asChild variant="ghost">
+                <Link to="/story">
+                  My story <ArrowUpRight />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
-        <div className="hero-portrait" ref={photo}>
-          <img
+        <div className="hero-bento">
+          <article className="bento bento-people">
+            <div className="bento-dots" aria-hidden="true">
+              <i className="bg-sky" />
+              <i className="bg-pink" />
+              <i className="bg-amber" />
+            </div>
+            <strong className="display">425+</strong>
+            <p>
+              people trained, led and judged: bootcamps, a 65-person shift, a
+              10-person unit, hackathons.
+            </p>
+            <Link to="/multiplier" className="mono bento-foot">
+              THE MULTIPLIER ↗
+            </Link>
+          </article>
+          <LessonCard />
+          <Link to="/lab" className="bento bento-cta">
+            <span className="bento-arrow" aria-hidden="true">
+              <ArrowUpRight size={16} />
+            </span>
+            <strong>Interview my AI</strong>
+            <p>
+              Ask anything about my work. It answers from my case studies, with
+              sources.
+            </p>
+          </Link>
+        </div>
+        <div className="hero-portrait">
+          <AsciiPortrait
             src="/me-standing.jpg"
             alt="Mahidhara S., arms crossed, in a navy suit"
-            width={900}
-            height={1350}
-            fetchPriority="high"
           />
         </div>
-        <div className="motion-bottom mono">
-          <span>DATA / PEOPLE / PROCESS</span>
-          <a href="#impact">
-            SCROLL: THE NUMBERS FIRST <ArrowDown size={14} />
-          </a>
+      </div>
+      <div className="tool-marquee mono" aria-label="Tools I work with">
+        <div className="tool-track">
+          {[...TOOLS, ...TOOLS].map((t, i) => (
+            <span key={`${t}-${i}`} aria-hidden={i >= TOOLS.length}>
+              <i
+                style={{
+                  background: `var(--c-${["sky", "violet", "pink", "coral", "amber", "lime", "mint"][i % 7]})`,
+                }}
+              />
+              {t}
+            </span>
+          ))}
         </div>
       </div>
     </section>

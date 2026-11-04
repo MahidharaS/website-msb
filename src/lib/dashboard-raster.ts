@@ -79,7 +79,7 @@ export async function rasterizeDashboard(
     } else if (kind === "text") {
       const text = (el.textContent ?? "").replace(/\s+/g, " ").trim();
       if (!text) continue;
-      ctx.fillStyle = cs.color;
+      ctx.fillStyle = visible(cs.color) ? cs.color : "#C6F432";
       ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
       const ls = parseFloat(cs.letterSpacing);
       if ("letterSpacing" in ctx)

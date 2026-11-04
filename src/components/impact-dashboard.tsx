@@ -12,6 +12,38 @@ import { CursorGlyph } from "./swarm-cursors";
 
 type Fn = (typeof dashboard.functions)[number];
 const SWARM_NAMES = ["EXCEL", "SQL", "POWER BI", "TABLEAU", "PYTHON", "DAX"];
+const SWARM_COLORS = [
+  "lime",
+  "sky",
+  "pink",
+  "amber",
+  "violet",
+  "coral",
+  "mint",
+];
+const FN_COLOR: Record<string, string> = {
+  ALL: "var(--c-lime)",
+  SALES: "var(--c-coral)",
+  OPERATIONS: "var(--c-amber)",
+  DATA: "var(--c-sky)",
+  TECHNOLOGY: "var(--c-violet)",
+  PROCESS: "var(--c-mint)",
+};
+const KPI_COLORS = [
+  "var(--c-lime)",
+  "var(--c-amber)",
+  "var(--c-coral)",
+  "var(--c-sky)",
+  "var(--c-mint)",
+];
+const OUTCOME_COLORS = [
+  "var(--c-coral)",
+  "var(--c-sky)",
+  "var(--c-violet)",
+  "var(--c-amber)",
+];
+const RECORD_COLORS = ["var(--c-sky)", "var(--c-pink)", "var(--c-violet)"];
+const DONUT_COLORS = ["#C6F432", "#4DA3FF", "#FF5FA2", "#FFB547", "#9B7BFF"];
 const ease = (t: number) =>
   t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const clamp01 = (t: number) => Math.max(0, Math.min(1, t));
@@ -213,6 +245,7 @@ export function ImpactDashboard({
             type="button"
             className="mono"
             aria-pressed={fn === f}
+            style={{ "--c": FN_COLOR[f] } as CSSProperties}
             data-g={fn === f ? "fill" : "frame"}
             onClick={() => setFn(f)}
           >
@@ -222,9 +255,10 @@ export function ImpactDashboard({
       </div>
 
       <div className="dash-kpis">
-        {dashboard.kpis.map((k) => (
+        {dashboard.kpis.map((k, ki) => (
           <button
             key={k.label}
+            style={{ "--c": KPI_COLORS[ki] } as CSSProperties}
             type="button"
             className="dash-kpi"
             data-swarm
@@ -252,9 +286,10 @@ export function ImpactDashboard({
             MEASURED OUTCOMES (%)
           </h3>
           <div className="dash-cols">
-            {dashboard.outcomes.map((o) => (
+            {dashboard.outcomes.map((o, oi) => (
               <button
                 key={o.label}
+                style={{ "--c": OUTCOME_COLORS[oi] } as CSSProperties}
                 type="button"
                 data-state={state(o.slug, o.tags)}
                 onMouseEnter={() => setHover(o.slug)}
@@ -283,8 +318,9 @@ export function ImpactDashboard({
           <h3 className="mono" data-g="text">
             RECORDS HANDLED (LOG SCALE)
           </h3>
-          {dashboard.records.map((r) => (
+          {dashboard.records.map((r, ri) => (
             <button
+              style={{ "--c": RECORD_COLORS[ri] } as CSSProperties}
               key={r.label}
               type="button"
               data-state={state(r.slug, r.tags)}
@@ -332,9 +368,7 @@ export function ImpactDashboard({
                     cy="60"
                     r={r}
                     fill="none"
-                    stroke={
-                      ["#C6F432", "#F2F0EA", "#7C8F2A", "#A7A9A0", "#4A5A12"][i]
-                    }
+                    stroke={DONUT_COLORS[i]}
                     strokeWidth="16"
                     strokeDasharray={`${(d.end - d.start) * c - 2} ${c}`}
                     strokeDashoffset={-d.start * c}
@@ -368,13 +402,7 @@ export function ImpactDashboard({
                 <li key={p.label}>
                   <i
                     style={{
-                      background: [
-                        "#C6F432",
-                        "#F2F0EA",
-                        "#7C8F2A",
-                        "#A7A9A0",
-                        "#4A5A12",
-                      ][i],
+                      background: DONUT_COLORS[i],
                     }}
                     data-g="fill"
                   />
@@ -462,7 +490,11 @@ export function ImpactDashboard({
             key={`b${i}`}
             data-box
             className="swarm-box"
-            data-tone={i % 2 ? "paper" : "lime"}
+            style={
+              {
+                "--sc": `var(--c-${SWARM_COLORS[i % SWARM_COLORS.length]})`,
+              } as CSSProperties
+            }
           />
         ))}
         {Array.from({ length: swarmCount }, (_, i) => (
@@ -470,7 +502,11 @@ export function ImpactDashboard({
             key={`c${i}`}
             data-cursor
             className="swarm-cursor"
-            data-tone={i % 2 ? "paper" : "lime"}
+            style={
+              {
+                "--sc": `var(--c-${SWARM_COLORS[i % SWARM_COLORS.length]})`,
+              } as CSSProperties
+            }
           >
             <CursorGlyph />
             <span>{SWARM_NAMES[i % SWARM_NAMES.length]}</span>
