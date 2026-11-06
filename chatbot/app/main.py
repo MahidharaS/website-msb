@@ -111,6 +111,11 @@ def _meta(meta: dict[str, str], request: Request) -> dict[str, str]:
 
 
 # ---------------------------------------------------------------- public API
+@app.get("/")
+async def root():
+    return {"service": "Ask Mahi API", "health": "/health", "owner_page": "/admin", "mcp": "/mcp/"}
+
+
 @app.get("/health")
 async def health():
     return {
