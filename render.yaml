@@ -31,7 +31,7 @@ services:
       - key: LLM_API_KEY
         sync: false # your nvapi-… key
       - key: DRIVE_FOLDER_URL
-        sync: false
+        value: https://drive.google.com/drive/folders/1FiMvD7tIZKxrDqZGmLNWbGVYhxK9sjpo?usp=sharing
       - key: NOTIFY_EMAIL
         value: mahidhara.s@outlook.com
       - key: RESEND_API_KEY
