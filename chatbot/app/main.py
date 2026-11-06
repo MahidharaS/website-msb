@@ -53,6 +53,8 @@ app = FastAPI(title="Ask Mahi", version="2.0.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=config.ALLOWED_ORIGINS,
+    # your own machine is always allowed (any port), so local testing needs no extra config
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type", "Accept", "Authorization", "Mcp-Session-Id"],
 )

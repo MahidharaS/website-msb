@@ -44,13 +44,17 @@ export function AskMahi() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
-  const [mode, setMode] = useState<Mode>(CHAT_API_URL ? "checking" : "offline");
+  // same first render on server and client; the effect below decides live vs offline
+  const [mode, setMode] = useState<Mode>("checking");
   const abort = useRef<AbortController | null>(null);
   const log = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (!CHAT_API_URL) return;
+    if (!CHAT_API_URL) {
+      setMode("offline");
+      return;
+    }
     const ac = new AbortController();
     // free Spaces sleep; give the wake-up a little time
     const timer = setTimeout(() => ac.abort(), 12000);

@@ -22,10 +22,17 @@ export type StreamEvent =
   | { type: "done" }
   | { type: "error"; message: string };
 
-export const CHAT_API_URL = (
+const ENV_CHAT_API_URL = (
   (import.meta.env as Record<string, string | undefined>)[
     "VITE_CHAT_API_URL"
   ] ?? ""
+).trim();
+const ON_LOCALHOST =
+  typeof window !== "undefined" &&
+  ["localhost", "127.0.0.1"].includes(window.location.hostname);
+// On your own machine, talk to the local API (port 7860) without any extra setup.
+export const CHAT_API_URL = (
+  ENV_CHAT_API_URL || (ON_LOCALHOST ? "http://localhost:7860" : "")
 ).replace(/\/$/, "");
 
 type Doc = { title: string; url: string; text: string; keys?: string };

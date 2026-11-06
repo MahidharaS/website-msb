@@ -91,10 +91,17 @@ export function startReveal() {
       io.observe(el);
     });
   };
-  scan();
-  const mo = new MutationObserver(() => scan());
+  // wait until React has hydrated lazy pages before touching their DOM, and batch mutations
+  let t = 0;
+  const later = () => {
+    clearTimeout(t);
+    t = window.setTimeout(scan, 450);
+  };
+  later();
+  const mo = new MutationObserver(later);
   mo.observe(document.body, { childList: true, subtree: true });
   return () => {
+    clearTimeout(t);
     io.disconnect();
     mo.disconnect();
   };
