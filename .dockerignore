@@ -3,6 +3,9 @@ node_modules
 .git
 .env
 .env.*
-chatbot
+chatbot/.env
+chatbot/.venv
+**/__pycache__
+**/*.pyc
 *.md
 !README.md
