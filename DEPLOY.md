@@ -40,24 +40,15 @@ where they left off. Every chat is also saved there for you.
 Safety: the assistant only uses past chats as private notes (it never reads them back), and if a
 visitor gives only a name that we know with an email, it asks for the email before using them.
 
-## 4. Render
-1. render.com → **New → Blueprint** → connect `MahidharaS/website-msb`. It reads `render.yaml` and
-   creates two services: `ask-mahi-api` and `mahidhara-portfolio`.
-2. Fill the values it asks for:
-   - `ask-mahi-api`: `LLM_API_KEY` = your `nvapi-…`, `DRIVE_FOLDER_URL` = folder link,
-     `RESEND_API_KEY` = `re_…`, `ALLOWED_ORIGINS` = your website URLs (comma separated).
-   - `mahidhara-portfolio`: `VITE_CHAT_API_URL` = the API URL Render shows, e.g. `https://ask-mahi-api.onrender.com`.
-3. Deploy. Check `https://<api>/health` → `"llm_key": true`, `"knowledge": {"source": "google-drive"}`, `"email": true`.
-4. Open `https://<api>/admin`, sign in with `ADMIN_TOKEN` (Render → ask-mahi-api → Environment
-   shows the generated value) → **Send test email**.
+## 4. Render (one service, one URL)
+The website and the AI run in ONE Render service: `https://mahidhara.onrender.com`.
+The AI lives under `/api` on the same address, so no CORS or extra URLs are needed.
 
-Free Render services sleep after ~15 minutes without traffic; the first chat after that takes ~30–60 s
-while it wakes (the site shows "waking the model" and answers offline meanwhile). A paid instance
-($7/month) removes the wait.
+1. render.com → New → Blueprint → `MahidharaS/website-msb` → it creates one service, `mahidhara`.
+2. Fill: `LLM_API_KEY`, `RESEND_API_KEY`, `ADMIN_TOKEN` (any long password). Leave the HISTORY_* empty until step 3b.
+3. Deploy. Check `https://mahidhara.onrender.com/api/health`, then `/api/admin` → Send test email.
 
-## 5. Lovable (optional)
-To make the Lovable-hosted copy use the same AI, add `VITE_CHAT_API_URL` in Lovable's project
-environment settings and add the Lovable URL to `ALLOWED_ORIGINS` on the API.
+Free Render services sleep after ~15 minutes without traffic; the first visit after that takes ~30–60 s.
 
 ## 6. ChatGPT curator (every 2 days)
 Create a scheduled task in ChatGPT with the Google Drive connector, and give it the format from

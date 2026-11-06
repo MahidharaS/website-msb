@@ -193,7 +193,10 @@ export async function checkLive(signal?: AbortSignal) {
   if (!CHAT_API_URL) return false;
   try {
     const r = await fetch(`${CHAT_API_URL}/health`, signal ? { signal } : {});
-    return r.ok;
+    if (!r.ok) return false;
+    // a host without the API may answer with an HTML page; only a real API says ok: true
+    const j = (await r.json().catch(() => null)) as { ok?: boolean } | null;
+    return j?.ok === true;
   } catch {
     return false;
   }

@@ -88,8 +88,10 @@
   let token = sessionStorage.getItem("askmahi-admin") || "";
   $("token").value = token;
   const say = (t) => ($("msg").textContent = t);
+  // works at /admin (local API) and at /api/admin (single-URL deployment)
+  const BASE = location.pathname.replace(/\/admin\/?$/, "");
   async function api(path, method = "GET", body) {
-    const r = await fetch(path, { method, headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: body ? JSON.stringify(body) : undefined });
+    const r = await fetch(BASE + path, { method, headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" }, body: body ? JSON.stringify(body) : undefined });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(j.detail || r.statusText);
     return j;
