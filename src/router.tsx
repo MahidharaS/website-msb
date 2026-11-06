@@ -14,6 +14,8 @@ export const getRouter = () => {
       </div>
     ),
     scrollRestoration: true,
+    // soft cross-fade between pages where the browser supports view transitions
+    defaultViewTransition: true,
     defaultPreloadStaleTime: 0,
   });
 

@@ -1,36 +1,29 @@
----
-title: Ask Mahi
-emoji: 🟢
-colorFrom: green
-colorTo: gray
-sdk: docker
-app_port: 7860
-pinned: false
----
+# Ask Mahi — portfolio assistant API
 
-# Ask Mahi — portfolio RAG assistant
+FastAPI service behind the website's **Ask Mahi** page and contact form.
 
-FastAPI + LangChain retrieval-augmented assistant for Mahidhara's portfolio.
+- **Model:** NVIDIA `nemotron-3.5-lightning-30b-a3b` through NVIDIA's OpenAI-compatible API
+  (any OpenAI-compatible model works via `LLM_*` settings).
+- **Knowledge:** JSON/text files in a Google Drive folder shared by link (no API key or OAuth),
+  refreshed every 30 minutes; falls back to `knowledge/` locally. Format: `KNOWLEDGE_FORMAT.md`.
+- **Tools / MCP:** `search_portfolio`, `get_project_details`, `get_experience`, `get_skills`.
+  The chatbot calls them through Nemotron's tool calling, and the same tools are served read-only
+  as an MCP server at `/mcp/` for ChatGPT, Claude or other agents.
+- **Email:** contact-form messages and a summary + transcript of every chat go to `NOTIFY_EMAIL`
+  (Resend or SMTP). Chats are emailed when the visitor leaves or after 10 idle minutes.
+- **Visitor memory (optional):** chats are saved per visitor to a private Drive folder via a
+  small Apps Script (`drive-history/Code.gs`); a returning visitor who gives their name/email is
+  welcomed back using private notes that are never quoted back.
+- **Owner page:** `/admin` to connect the Drive folder, sync, see what the assistant knows and
+  send a test email.
 
-- **Retriever:** Supabase pgvector (`supabase/schema.sql`) or, if not configured, an
-  in-memory index built from `knowledge/*.md` at startup.
-- **Embeddings:** `BAAI/bge-small-en-v1.5` via FastEmbed (ONNX, CPU, free).
-- **LLM:** any OpenAI-compatible endpoint — Hugging Face Inference Providers by default
-  (`Qwen/Qwen2.5-7B-Instruct`), or Ollama for fully local runs.
-- **Observability:** LangSmith tracing when `LANGSMITH_TRACING=true`.
-- **Logging:** each turn is stored in Supabase `chat_messages` (service-role only, RLS on).
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/health` | model, key present, knowledge source, email on |
+| POST | `/chat/stream` | `{message, history[], session_id, meta}` → SSE tokens, sources, done |
+| POST | `/chat/end` | `{session_id}` → email the chat now |
+| POST | `/contact` | contact form → email |
+| GET | `/admin` | owner page |
+| * | `/mcp/` | MCP (streamable HTTP) |
 
-## API
-| Method | Path | Body | Returns |
-|---|---|---|---|
-| GET | `/health` | – | `{ok, model, store}` |
-| POST | `/chat/stream` | `{message, history[], session_id}` | SSE: `{"type":"token"}` … `{"type":"sources"}` `{"type":"done"}` |
-| POST | `/chat` | same | `{answer, sources}` |
-
-Configure with the variables in `.env.example`. Deploy steps: see `../DEPLOY.md`.
-Local run: see `../LOCAL.md`.
-
-## Swapping the framework
-`app/rag.py` is the only place that knows about LangChain. To use CrewAI agents or a Dify
-app instead, replace `answer_stream()` with a generator that yields the same events — the
-website does not need to change.
+Run locally: `../LOCAL.md`. Deploy: `../DEPLOY.md`.

@@ -1,17 +1,26 @@
-# Render Blueprint for the portfolio frontend. Builds the root Dockerfile (Bun, no npm).
-# Lovable keeps building its own way; this file is only read by Render.
+# Render Blueprint: ONE service = website + AI at https://mahidhara.onrender.com
+# (Render uses the service name for the URL; if "mahidhara" is taken it adds a suffix.)
 services:
   - type: web
-    name: mahidhara-portfolio
+    name: mahidhara
     runtime: docker
     plan: free
     dockerfilePath: ./Dockerfile
-    healthCheckPath: /
+    healthCheckPath: /api/health
     envVars:
-      - key: PORT
-        value: "3000"
-      # Build-time values: set them, then redeploy. Render passes env vars as Docker build args.
-      - key: VITE_CHAT_API_URL
-        sync: false # e.g. https://<your-hf-user>-ask-mahi.hf.space
-      - key: VITE_RESUME_URL
-        sync: false
+      - key: LLM_API_KEY
+        sync: false # nvapi-…
+      - key: RESEND_API_KEY
+        sync: false # re_…
+      - key: ADMIN_TOKEN
+        sync: false # any long password, used for /api/admin
+      - key: HISTORY_WEBHOOK_URL
+        sync: false # optional, Apps Script /exec URL
+      - key: HISTORY_SECRET
+        sync: false # optional
+      - key: DRIVE_FOLDER_URL
+        value: https://drive.google.com/drive/folders/1FiMvD7tIZKxrDqZGmLNWbGVYhxK9sjpo?usp=sharing
+      - key: LLM_MODEL
+        value: nvidia/nemotron-3.5-lightning-30b-a3b
+      - key: NOTIFY_EMAIL
+        value: mahidhara.s@outlook.com

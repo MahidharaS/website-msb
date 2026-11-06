@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { assets, email } from "@/data/content";
 import {
   CHAT_API_URL,
+  chatSessionId,
   checkLive,
+  endChatSession,
   liveAnswer,
   offlineAnswer,
   type ChatTurn,
@@ -36,28 +38,23 @@ const SUGGESTIONS = [
 
 const newId = () => Math.random().toString(36).slice(2, 10);
 
-function sessionId() {
-  try {
-    const k = "ask-mahi-session";
-    const v = localStorage.getItem(k) ?? `s_${newId()}${newId()}`;
-    localStorage.setItem(k, v);
-    return v;
-  } catch {
-    return `s_${newId()}`;
-  }
-}
+const sessionId = chatSessionId;
 
 export function AskMahi() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
-  const [mode, setMode] = useState<Mode>(CHAT_API_URL ? "checking" : "offline");
+  // same first render on server and client; the effect below decides live vs offline
+  const [mode, setMode] = useState<Mode>("checking");
   const abort = useRef<AbortController | null>(null);
   const log = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (!CHAT_API_URL) return;
+    if (!CHAT_API_URL) {
+      setMode("offline");
+      return;
+    }
     const ac = new AbortController();
     // free Spaces sleep; give the wake-up a little time
     const timer = setTimeout(() => ac.abort(), 12000);
@@ -65,6 +62,22 @@ export function AskMahi() {
     return () => {
       clearTimeout(timer);
       ac.abort();
+    };
+  }, []);
+
+  // when the visitor leaves, the backend emails Mahidhara a summary of this chat
+  const chatted = useRef(false);
+  useEffect(() => {
+    const leave = () => {
+      if (chatted.current) endChatSession(chatSessionId());
+    };
+    const hidden = () => document.visibilityState === "hidden" && leave();
+    window.addEventListener("pagehide", leave);
+    document.addEventListener("visibilitychange", hidden);
+    return () => {
+      leave();
+      window.removeEventListener("pagehide", leave);
+      document.removeEventListener("visibilitychange", hidden);
     };
   }, []);
 
@@ -111,6 +124,7 @@ export function AskMahi() {
     try {
       if (mode === "live") {
         try {
+          chatted.current = true;
           await run(liveAnswer(q, history, sessionId(), ac.signal));
         } catch (e) {
           if (ac.signal.aborted) throw e;
@@ -170,13 +184,13 @@ export function AskMahi() {
           <RotateCcw /> NEW CHAT
         </Button>
         <div className="ask-stack mono">
-          LANGCHAIN · RAG
+          NVIDIA NEMOTRON · TOOL CALLING
           <br />
-          SUPABASE PGVECTOR
+          MCP SERVER · READ-ONLY TOOLS
           <br />
-          OPEN-WEIGHT LLM ON HUGGING FACE
+          KNOWLEDGE CURATED IN GOOGLE DRIVE
           <br />
-          TRACED WITH LANGSMITH
+          LANGCHAIN · LANGSMITH
         </div>
       </aside>
       <section className="ask-main" aria-label="Conversation">
@@ -312,8 +326,9 @@ export function AskMahi() {
             )}
           </div>
           <p className="ask-note">
-            AI can be wrong. For anything that matters, confirm with Mahidhara
-            at {email}.
+            AI can be wrong; confirm anything important with Mahidhara at{" "}
+            {email}. Conversations are shared with Mahidhara so he can follow
+            up, and remembered for next time if you tell me your name.
           </p>
         </form>
       </section>

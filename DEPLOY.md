@@ -1,54 +1,67 @@
 # Deploying the portfolio + Ask Mahi
 
 ```
-Browser ──▶ Render (website, Node SSR) ──SSE──▶ Hugging Face Space (FastAPI + LangChain)
-                                                   ├─▶ HF Inference Providers (open-weight LLM)
-                                                   ├─▶ Supabase (pgvector knowledge + chat log)
-                                                   └─▶ LangSmith (traces, evals)
+Visitor ─▶ Website (Render / Lovable) ─▶ Ask Mahi API (Render)
+                                           ├─ NVIDIA Nemotron (answers, tool calling)
+                                           ├─ read-only MCP tools over your Google Drive folder
+                                           └─ email to you (contact form + chat summaries)
+ChatGPT scheduled task ─▶ writes curated JSON into the same Drive folder every 2 days
 ```
 
-## 1. Supabase (database)
-1. Create a project at supabase.com (free tier).
-2. SQL Editor → paste `chatbot/supabase/schema.sql` → Run.
-3. Settings → API: copy the **Project URL** and the **service_role** key (backend only).
+## 1. NVIDIA key (the model)
+build.nvidia.com → open `nvidia/nemotron-3.5-lightning-30b-a3b` → **Generate API Key**. It starts with `nvapi-`.
 
-## 2. Load the knowledge base
-Edit or add files in `chatbot/knowledge/` (resume text, GitHub project write-ups…), then:
+## 2. Google Drive folder (the knowledge)
+1. Create a folder, e.g. `Portfolio – public knowledge`. Put only things anyone may read in it.
+2. Upload the JSON files from `chatbot/knowledge/` as a starting point (format: `chatbot/KNOWLEDGE_FORMAT.md`).
+3. Right-click the folder → **Share** → General access: **Anyone with the link → Viewer** → **Copy link**.
 
-```bash
-cd chatbot && cp .env.example .env    # fill SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY
-docker compose run --rm api python ingest.py
-# (or, with a Python venv: pip install -r requirements.txt && python ingest.py)
-```
+No Google API key or OAuth app is needed: the server reads the link-shared folder directly.
 
-Re-run `python ingest.py` whenever the knowledge files change.
+## 3. Email (so messages and chat summaries reach you)
+Easiest: **Resend** (free, 100 emails/day).
+1. Sign up at resend.com **using mahidhara.s@outlook.com** (without your own domain, Resend can only
+   send to the address you signed up with, which is exactly what we need).
+2. API Keys → Create → copy the `re_…` key.
 
-## 3. Hugging Face Space (backend + model)
-1. huggingface.co → New Space → SDK **Docker** → Blank → hardware **CPU basic (free)**.
-2. Push the *contents* of `chatbot/` to the Space repo (its `README.md` already has the Space header):
+(Alternative: SMTP with a Gmail account + App Password, see `chatbot/.env.example`.)
 
-   ```bash
-   git clone https://huggingface.co/spaces/<you>/ask-mahi hf-space
-   cp -r chatbot/. hf-space/ && cd hf-space && git add . && git commit -m "Ask Mahi" && git push
-   ```
+## 3b. Private chat history in your Drive (optional, recommended)
+Lets the assistant recognise a returning visitor who gives their name (and email) and pick up
+where they left off. Every chat is also saved there for you.
+1. Create a **private** folder, e.g. `Portfolio – chat history` (do not share it). Copy its id
+   from the URL (`drive.google.com/drive/folders/<id>`).
+2. script.google.com → New project → paste `chatbot/drive-history/Code.gs` → fill `FOLDER_ID`
+   and a long random `SECRET`.
+3. Deploy → New deployment → **Web app** → Execute as **Me**, Who has access **Anyone** → Deploy →
+   authorise → copy the URL ending in `/exec`.
+4. On the API set `HISTORY_WEBHOOK_URL` = that URL and `HISTORY_SECRET` = the same secret.
 
-3. Space → Settings → **Variables and secrets** (secrets marked 🔒):
-   - 🔒 `LLM_API_KEY` = HF access token (fine-grained, "Make calls to Inference Providers")
-   - `LLM_MODEL` = `Qwen/Qwen2.5-7B-Instruct` (or any open-weight chat model offered by Inference Providers)
-   - 🔒 `SUPABASE_URL`, 🔒 `SUPABASE_SERVICE_ROLE_KEY`
-   - `ALLOWED_ORIGINS` = `https://<your-render-site>.onrender.com,https://lime-and-heart-showcase.lovable.app`
-   - Optional: `LANGSMITH_TRACING=true`, 🔒 `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT=ask-mahi`
-4. The API is then at `https://<you>-ask-mahi.hf.space` (check `/health`).
+Safety: the assistant only uses past chats as private notes (it never reads them back), and if a
+visitor gives only a name that we know with an email, it asks for the email before using them.
 
-Free Spaces sleep after inactivity; the site shows "waking the model" and falls back to
-offline answers until it is up.
+## 4. Render (one service, one URL)
+The website and the AI run in ONE Render service: `https://mahidhara.onrender.com`.
+The AI lives under `/api` on the same address, so no CORS or extra URLs are needed.
 
-## 4. Render (website)
-1. render.com → New → Blueprint → pick this repo (uses `render.yaml`, which builds the
-   root `Dockerfile` with Bun — no npm involved).
-2. Set `VITE_CHAT_API_URL=https://<you>-ask-mahi.hf.space` (and `VITE_RESUME_URL` if you
-   host the resume yourself). These are baked in at build time, so redeploy after changing them.
+1. render.com → New → Blueprint → `MahidharaS/website-msb` → it creates one service, `mahidhara`.
+2. Fill: `LLM_API_KEY`, `RESEND_API_KEY`, `ADMIN_TOKEN` (any long password). Leave the HISTORY_* empty until step 3b.
+3. Deploy. Check `https://mahidhara.onrender.com/api/health`, then `/api/admin` → Send test email.
 
-## 5. Lovable
-Lovable keeps hosting its own copy. To make its chat live too, add `VITE_CHAT_API_URL`
-in Lovable's project settings (environment) — no code change needed.
+Free Render services sleep after ~15 minutes without traffic; the first visit after that takes ~30–60 s.
+
+## 6. ChatGPT curator (every 2 days)
+Create a scheduled task in ChatGPT with the Google Drive connector, and give it the format from
+`chatbot/KNOWLEDGE_FORMAT.md`, for example:
+
+> Every 2 days: review what you know about my work from my projects and notes. Keep only facts that
+> are safe for the public and make my portfolio stronger (no salaries, client names under NDA,
+> personal details). Write them as JSON entries in the documented format and update the files in my
+> Drive folder "Portfolio – public knowledge". Keep existing entries unless they are outdated.
+
+The API picks up changes within 30 minutes, or immediately via `/admin` → Sync now.
+
+## Using the MCP server elsewhere
+The API also serves a read-only MCP server at `https://<api>/mcp/` with the tools
+`search_portfolio`, `get_project_details`, `get_experience`, `get_skills`, so you can plug your
+portfolio knowledge into ChatGPT, Claude or other agents too.

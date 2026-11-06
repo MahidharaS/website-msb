@@ -1,0 +1,133 @@
+{
+  "entries": [
+    {
+      "type": "project",
+      "title": "Lead engine: sales was guessing who to call",
+      "org": "Digital Maven",
+      "period": "2024–present",
+      "summary": "Automated pipeline brings Meta Lead Ads, website and email leads into the CRM via API; NLP and deep learning score leads from CRM attributes, interaction history and salesperson remarks.",
+      "details": "About 1 lakh records processed without manual handling. MLflow for experiment tracking, versioning and serving. Scores sit inside the sales workflow so reps call high-probability leads first. Model internals are confidential; only outcomes are shared.",
+      "metrics": [
+        "94.6% accuracy",
+        "1 lakh+ records"
+      ],
+      "tags": [
+        "NLP",
+        "deep learning",
+        "MLflow",
+        "CRM",
+        "sales",
+        "lead scoring"
+      ],
+      "url": "/work/lead-engine"
+    },
+    {
+      "type": "project",
+      "title": "KPI system: four functions, no single truth",
+      "org": "Digital Maven",
+      "summary": "Defined and documented 12+ cross-functional KPIs with agreed definitions and data lineage, then built 6+ Power BI dashboards.",
+      "metrics": [
+        "~40% faster reporting",
+        "12+ KPIs",
+        "6+ dashboards"
+      ],
+      "tags": [
+        "Power BI",
+        "KPI",
+        "data lineage",
+        "operations"
+      ],
+      "url": "/work/kpi-system"
+    },
+    {
+      "type": "project",
+      "title": "CRM automation: follow-ups were manual and leaky",
+      "org": "Digital Maven",
+      "summary": "Gathered CRM automation requirements, wrote acceptance criteria and ran UAT.",
+      "metrics": [
+        "~30% less manual follow-up"
+      ],
+      "tags": [
+        "CRM",
+        "automation",
+        "UAT"
+      ],
+      "url": "/work/crm-automation"
+    },
+    {
+      "type": "project",
+      "title": "Shop floor: idle machines, invisible lost time",
+      "org": "Triton Valves",
+      "summary": "Real-time production dashboards plus SPC gave continuous-improvement reviews their first quantitative baseline.",
+      "metrics": [
+        "+10% shift output efficiency"
+      ],
+      "tags": [
+        "manufacturing",
+        "SPC",
+        "dashboards"
+      ],
+      "url": "/work/shop-floor"
+    },
+    {
+      "type": "project",
+      "title": "Hospital workflows",
+      "org": "Pepino Technology",
+      "summary": "Mapped dataflows and documented 15+ user workflows across three hospital modules.",
+      "metrics": [
+        "15+ workflows"
+      ],
+      "tags": [
+        "healthcare",
+        "business analysis"
+      ],
+      "url": "/work/hospital-workflows"
+    },
+    {
+      "type": "project",
+      "title": "Supply chain KPI automation",
+      "summary": "SQL ETL into Power BI and Tableau with data-quality checks, replacing a two-day manual reporting cycle.",
+      "tags": [
+        "SQL",
+        "ETL",
+        "Power BI",
+        "Tableau"
+      ],
+      "url": "/lab"
+    },
+    {
+      "type": "project",
+      "title": "Car price prediction",
+      "summary": "Artificial neural network on 8,000+ CarDekho listings; outperformed linear regression on RMSE.",
+      "tags": [
+        "ANN",
+        "Python",
+        "regression"
+      ],
+      "url": "/lab"
+    },
+    {
+      "type": "project",
+      "title": "Social media revenue mapping",
+      "summary": "10,000+ data points across four social channels; engagement-to-revenue correlation in Python and Excel.",
+      "tags": [
+        "marketing analytics",
+        "Python",
+        "Excel"
+      ],
+      "url": "/lab"
+    },
+    {
+      "type": "project",
+      "title": "Ask Mahi (this assistant)",
+      "summary": "A portfolio assistant: NVIDIA Nemotron answers using read-only MCP tools over a curated Google Drive knowledge folder; chats are summarised by email.",
+      "tags": [
+        "LLM",
+        "MCP",
+        "RAG",
+        "agents"
+      ],
+      "url": "/lab"
+    }
+  ]
+}

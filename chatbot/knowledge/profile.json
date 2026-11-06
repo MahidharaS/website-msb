@@ -1,0 +1,40 @@
+{
+  "entries": [
+    {
+      "type": "profile",
+      "title": "Who Mahidhara is",
+      "summary": "Mahidhara S. (Mahi) is a Machine Learning Engineer and head of a 10-person unit at Digital Maven, Bangalore. He started as a data analyst, became an ML engineer and is moving into data science.",
+      "details": "He connects data, people and processes to turn messy business problems into measurable outcomes. Analyst by choice, operator by nature. He has worked with sales, operations, marketing, HR and the shop floor.",
+      "tags": [
+        "ML engineer",
+        "data analyst",
+        "data science",
+        "Bangalore"
+      ],
+      "url": "/"
+    },
+    {
+      "type": "profile",
+      "title": "What he is looking for",
+      "summary": "A data scientist role where the questions are still open: a team that wants someone who can frame the problem, build the model and get it used.",
+      "tags": [
+        "hiring",
+        "data scientist",
+        "open to roles"
+      ],
+      "url": "/contact"
+    },
+    {
+      "type": "profile",
+      "title": "Contact",
+      "summary": "Email mahidhara.s@outlook.com or LinkedIn https://www.linkedin.com/in/mahidhara-s/. Based in Bangalore, India; willing to relocate.",
+      "tags": [
+        "contact",
+        "email",
+        "linkedin",
+        "relocate"
+      ],
+      "url": "/contact"
+    }
+  ]
+}

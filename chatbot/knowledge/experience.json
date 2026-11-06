@@ -1,0 +1,97 @@
+{
+  "entries": [
+    {
+      "type": "experience",
+      "title": "ML Engineer & Head of Unit",
+      "org": "Digital Maven",
+      "period": "2024–present",
+      "summary": "Builds automated lead ingestion and NLP-based lead scoring, defines cross-functional KPIs and leads a 10-person unit supporting operations that generated about ₹50 lakh in revenue.",
+      "metrics": [
+        "94.6% lead-score accuracy",
+        "~1 lakh records ingested automatically",
+        "~40% faster reporting",
+        "~30% less manual follow-up",
+        "10 people led"
+      ],
+      "tags": [
+        "machine learning",
+        "NLP",
+        "CRM",
+        "Power BI",
+        "leadership"
+      ],
+      "url": "/work"
+    },
+    {
+      "type": "experience",
+      "title": "Business Analyst Intern",
+      "org": "Pepino Technology",
+      "period": "2023",
+      "summary": "Supported three Azure-hosted hospital management modules: mapped dataflows, prototyped analytics, documented 15+ user workflows and supported UAT.",
+      "metrics": [
+        "15+ workflows documented"
+      ],
+      "tags": [
+        "business analysis",
+        "UAT",
+        "healthcare"
+      ],
+      "url": "/work/hospital-workflows"
+    },
+    {
+      "type": "experience",
+      "title": "Graduate Engineer Trainee",
+      "org": "Triton Valves, Mysore",
+      "period": "2020–2021",
+      "summary": "Ran a 65-member shift, built real-time production dashboards exposing idle time and throughput gaps, applied SPC and visual management.",
+      "metrics": [
+        "+10% shift output efficiency",
+        "65-person shift"
+      ],
+      "tags": [
+        "operations",
+        "manufacturing",
+        "SPC",
+        "dashboards"
+      ],
+      "url": "/work/shop-floor"
+    },
+    {
+      "type": "experience",
+      "title": "Service Advisor",
+      "org": "URS Cars",
+      "period": "2019–2020",
+      "summary": "Live customer-facing operations straight out of college. COVID-19 then delayed his next role by four months.",
+      "tags": [
+        "customer service",
+        "operations"
+      ],
+      "url": "/story"
+    },
+    {
+      "type": "education",
+      "title": "PGDM Business Analytics & Marketing",
+      "org": "RIMS Bangalore",
+      "period": "2022–2024",
+      "summary": "Post-graduate business analytics and marketing; also completed KPMG Business Analytics L1 & L2.",
+      "tags": [
+        "education",
+        "KPMG",
+        "business analytics"
+      ],
+      "url": "/story"
+    },
+    {
+      "type": "education",
+      "title": "BE Mechanical Engineering",
+      "org": "NIE Mysore",
+      "period": "2015–2019",
+      "summary": "Engineering foundation in systems, constraints and root-cause thinking.",
+      "tags": [
+        "education",
+        "engineering"
+      ],
+      "url": "/story"
+    }
+  ]
+}

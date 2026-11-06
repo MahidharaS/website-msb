@@ -1,0 +1,31 @@
+{
+  "entries": [
+    {
+      "type": "achievement",
+      "title": "Trainer and community builder",
+      "summary": "Trained 200+ participants across 8+ analytics bootcamps and corporate sessions on SQL, Power BI, Excel and data storytelling; designed a 4-day bootcamp for two partner colleges.",
+      "metrics": [
+        "200+ trained"
+      ],
+      "url": "/multiplier"
+    },
+    {
+      "type": "achievement",
+      "title": "Aithon AI hackathon",
+      "summary": "Organised and led the Aithon AI hackathon with 100+ builders.",
+      "metrics": [
+        "100+ builders"
+      ],
+      "url": "/multiplier"
+    },
+    {
+      "type": "achievement",
+      "title": "Analytics competition judge",
+      "summary": "Judged 50+ student analytics teams across partner institutions.",
+      "metrics": [
+        "50+ teams"
+      ],
+      "url": "/multiplier"
+    }
+  ]
+}

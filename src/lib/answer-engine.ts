@@ -1,6 +1,6 @@
 // Ask Mahi client.
-// Live mode: streams from the RAG backend (chatbot/, deployed on Hugging Face Spaces) set in
-// VITE_CHAT_API_URL. Offline mode: a small BM25 retriever over the portfolio facts in
+// Live mode: streams from the backend in chatbot/ (deployed on Render) set in
+// VITE_CHAT_API_URL (NVIDIA Nemotron + MCP tools). Offline mode: a small BM25 retriever over the portfolio facts in
 // content.ts, so the page still answers honestly when the backend is asleep or not configured.
 import {
   cases,
@@ -22,10 +22,17 @@ export type StreamEvent =
   | { type: "done" }
   | { type: "error"; message: string };
 
-export const CHAT_API_URL = (
+const ENV_CHAT_API_URL = (
   (import.meta.env as Record<string, string | undefined>)[
     "VITE_CHAT_API_URL"
   ] ?? ""
+).trim();
+const ON_LOCALHOST =
+  typeof window !== "undefined" &&
+  ["localhost", "127.0.0.1"].includes(window.location.hostname);
+// On your own machine, talk to the local API (port 7860) without any extra setup.
+export const CHAT_API_URL = (
+  ENV_CHAT_API_URL || (ON_LOCALHOST ? "http://localhost:7860" : "")
 ).replace(/\/$/, "");
 
 type Doc = { title: string; url: string; text: string; keys?: string };
@@ -193,7 +200,10 @@ export async function checkLive(signal?: AbortSignal) {
   if (!CHAT_API_URL) return false;
   try {
     const r = await fetch(`${CHAT_API_URL}/health`, signal ? { signal } : {});
-    return r.ok;
+    if (!r.ok) return false;
+    // a host without the API may answer with an HTML page; only a real API says ok: true
+    const j = (await r.json().catch(() => null)) as { ok?: boolean } | null;
+    return j?.ok === true;
   } catch {
     return false;
   }
@@ -241,4 +251,74 @@ export async function* liveAnswer(
       }
     }
   }
+}
+
+/** Non-identifying context sent with chats and contact messages (page, referrer, timezone). */
+export function visitorMeta(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  return {
+    page: window.location.pathname,
+    referrer: document.referrer || "",
+    language: navigator.language || "",
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "",
+    screen: `${window.screen.width}x${window.screen.height}`,
+  };
+}
+
+const SESSION_KEY = "ask-mahi-session";
+/** One id per browser tab session, shared by the chat and the contact form. */
+export function chatSessionId(): string {
+  try {
+    let v = sessionStorage.getItem(SESSION_KEY);
+    if (!v) {
+      v = `s_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
+      sessionStorage.setItem(SESSION_KEY, v);
+    }
+    return v;
+  } catch {
+    return "anonymous";
+  }
+}
+
+/** Tell the backend the visitor left, so the chat summary is emailed right away. */
+export function endChatSession(sessionId: string) {
+  if (!CHAT_API_URL || typeof navigator === "undefined") return;
+  const body = JSON.stringify({ session_id: sessionId });
+  try {
+    if (
+      !navigator.sendBeacon?.(
+        `${CHAT_API_URL}/chat/end`,
+        new Blob([body], { type: "text/plain" }),
+      )
+    )
+      void fetch(`${CHAT_API_URL}/chat/end`, {
+        method: "POST",
+        body,
+        keepalive: true,
+      });
+  } catch {
+    /* best effort */
+  }
+}
+
+export async function sendContact(payload: {
+  who: string;
+  areas: string[];
+  message: string;
+  name: string;
+  email: string;
+  website?: string;
+}): Promise<{ delivered: boolean }> {
+  if (!CHAT_API_URL) return { delivered: false };
+  const r = await fetch(`${CHAT_API_URL}/contact`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...payload,
+      session_id: chatSessionId(),
+      meta: visitorMeta(),
+    }),
+  });
+  if (!r.ok) return { delivered: false };
+  return (await r.json()) as { delivered: boolean };
 }
