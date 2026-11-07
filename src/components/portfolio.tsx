@@ -21,6 +21,8 @@ import {
 import { AskMahi } from "@/components/ask-mahi";
 import { sendContact } from "@/lib/answer-engine";
 import { StoryPath } from "@/components/story-path";
+import { Glow } from "@/components/glow";
+import { ToolIcon } from "@/components/tool-icon";
 import {
   Dialog,
   DialogContent,
@@ -320,19 +322,25 @@ export function Work() {
               params={{ slug: c.slug }}
               className="work-row"
             >
-              <span className="mono text-muted-foreground">
-                0{cases.indexOf(c) + 1}
+              <span className="mono work-row-index">
+                0{cases.indexOf(c) + 1} · {c.company}
               </span>
-              <div>
-                <h3 className="display">{c.title}</h3>
-                {c.tags.map((t) => (
-                  <span className="tag" key={t}>
-                    {t}
-                  </span>
-                ))}
+              <h3 className="display work-row-title">{c.title}</h3>
+              <div className="work-row-body">
+                <p>{c.problem}</p>
+                <div className="work-row-tags">
+                  {c.tags.map((t) => (
+                    <span className="tag" key={t}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <span className="display row-metric">{c.metric}</span>
-              <ArrowUpRight size={21} className="text-primary" />
+              <div className="work-row-metric">
+                <span className="display row-metric">{c.metric}</span>
+                <span className="mono">{c.metricLabel}</span>
+              </div>
+              <ArrowUpRight size={22} className="work-row-arrow text-primary" />
             </Link>
           ),
         )}
@@ -448,6 +456,55 @@ export function CaseStudy({ slug }: { slug: string }) {
     </main>
   );
 }
+const LOOP_VERBS = [
+  "Watch the real workflow",
+  "Find the root cause",
+  "Make the fix",
+  "Put it in people's hands",
+  "Check what changed",
+];
+const TOOLSET = [
+  {
+    group: "AI & machine learning",
+    items: [
+      { name: "Python", icon: "python", fallback: "code" },
+      { name: "NLP", icon: "", fallback: "text" },
+      { name: "Deep Learning", icon: "pytorch", fallback: "brain" },
+      { name: "MLflow", icon: "mlflow", fallback: "flask" },
+      { name: "LangChain", icon: "langchain", fallback: "link" },
+      { name: "LangSmith", icon: "", fallback: "activity" },
+      { name: "RAG", icon: "", fallback: "search" },
+      { name: "CrewAI", icon: "crewai", fallback: "users" },
+      { name: "Dify", icon: "", fallback: "workflow" },
+      { name: "LangFlow", icon: "", fallback: "workflow" },
+      { name: "n8n", icon: "n8n", fallback: "workflow" },
+      { name: "R", icon: "r", fallback: "code" },
+    ],
+  },
+  {
+    group: "Data & BI",
+    items: [
+      { name: "SQL", icon: "mysql", fallback: "database" },
+      { name: "Power BI", icon: "", fallback: "chart" },
+      { name: "Tableau", icon: "tableau", fallback: "chart" },
+      { name: "Excel + VBA", icon: "", fallback: "table" },
+      { name: "ETL", icon: "", fallback: "database" },
+      { name: "KPI Design", icon: "", fallback: "gauge" },
+    ],
+  },
+  {
+    group: "Business & delivery",
+    items: [
+      { name: "Requirements", icon: "", fallback: "list" },
+      { name: "UAT", icon: "", fallback: "check" },
+      { name: "Process Mapping", icon: "", fallback: "workflow" },
+      { name: "Agile", icon: "", fallback: "repeat" },
+      { name: "Lean", icon: "", fallback: "gauge" },
+      { name: "ClickUp", icon: "clickup", fallback: "check" },
+      { name: "CRM", icon: "", fallback: "users" },
+    ],
+  },
+];
 export function Approach() {
   const [step, setStep] = useState(0);
   return (
@@ -470,22 +527,46 @@ export function Approach() {
           <h2 className="section-heading">THE LOOP.</h2>
           <span className="mono text-muted-foreground">REPEAT ↻</span>
         </div>
-        <div className="loop">
+        <ol className="loop-flow" aria-label="The five steps, in order">
           {steps.map((s, i) => (
-            <Button
+            <li
               key={s.name}
-              variant={i === step ? "default" : "outline"}
-              onClick={() => setStep(i)}
+              data-state={i === step ? "active" : i < step ? "done" : "next"}
             >
-              <span className="mono">0{i + 1}</span>
-              {s.name}
-              <ArrowRight />
-            </Button>
+              <button
+                type="button"
+                onClick={() => setStep(i)}
+                aria-current={i === step ? "step" : undefined}
+              >
+                <span className="mono">STEP 0{i + 1}</span>
+                <strong>{s.name}</strong>
+                <span className="loop-verb">{LOOP_VERBS[i]}</span>
+              </button>
+              {i < steps.length - 1 ? (
+                <span className="loop-arrow" aria-hidden="true">
+                  <ArrowRight size={18} />
+                </span>
+              ) : null}
+            </li>
           ))}
-        </div>
-        <div className="detail-box">
-          {steps[step]?.text}
-          <div className="mt-4">
+        </ol>
+        <p className="loop-back mono">
+          ↻ AFTER MEASURE, THE RESULT BECOMES THE NEXT THING TO OBSERVE
+        </p>
+        <div className="detail-box loop-detail">
+          <span className="mono text-primary">
+            STEP 0{step + 1} OF 0{steps.length} · {steps[step]?.name}
+          </span>
+          <p>{steps[step]?.text}</p>
+          <div className="loop-nav">
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={step === 0}
+              onClick={() => setStep(step - 1)}
+            >
+              Previous
+            </Button>
             <Link
               to="/work/$slug"
               params={{ slug: steps[step]?.slug ?? "lead-engine" }}
@@ -493,6 +574,15 @@ export function Approach() {
             >
               SEE IT IN PRACTICE ↗
             </Link>
+            <Button
+              size="sm"
+              onClick={() => setStep((step + 1) % steps.length)}
+            >
+              {step === steps.length - 1
+                ? "Back to step 01"
+                : `Next: ${steps[step + 1]?.name}`}{" "}
+              <ArrowRight />
+            </Button>
           </div>
         </div>
       </section>
@@ -526,13 +616,21 @@ export function Approach() {
       <section className="section border-t border-border">
         <p className="mono section-index">THE LEAST INTERESTING PART</p>
         <h2 className="section-heading mb-6">THE TOOLBOX.</h2>
-        <p className="toolbox">
-          Python · SQL · R · NLP · Deep Learning · MLflow · LangChain ·
-          LangSmith · CrewAI · Dify · LangFlow · n8n · RAG
-          <br />
-          Power BI · Tableau · Excel + VBA · ETL · Requirements · UAT · KPI
-          Design · Process Mapping · Agile · Lean · ClickUp · CRM
-        </p>
+        <div className="toolset">
+          {TOOLSET.map((g) => (
+            <div key={g.group}>
+              <h3>{g.group}</h3>
+              <div className="chips">
+                {g.items.map((t) => (
+                  <Glow key={t.name} radius={999}>
+                    <ToolIcon slug={t.icon} fallback={t.fallback} />
+                    {t.name}
+                  </Glow>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
         <div className="mt-7 flex gap-2 flex-wrap">
           {[
             "KPMG BA L1 & L2",
@@ -604,22 +702,26 @@ export function Lab() {
 export function Multiplier() {
   const items = [
     {
+      stage: "Training",
       number: "200+",
       title: "PARTICIPANTS TRAINED.",
       text: "8+ analytics bootcamps and corporate training sessions on SQL, Power BI, Excel, and data storytelling.",
     },
     {
+      stage: "Hackathon",
       number: "100+",
       title: "BUILDERS AT AITHON.",
       text: "Organised and led the Aithon AI hackathon, bringing participants together to build and explore.",
     },
     {
+      stage: "Judging",
       number: "50+",
       title: "STUDENT TEAMS JUDGED.",
       text: "Evaluated analytics competition teams across partner institutions.",
     },
     {
-      number: "4 DAYS",
+      stage: "Bootcamp",
+      number: "4 Days",
       title: "TWO PARTNER COLLEGES.",
       text: "A data analytics bootcamp designed to turn concepts into practical experience.",
     },
@@ -638,13 +740,25 @@ export function Multiplier() {
       >
         Good work matters. Helping other people do good work multiplies it.
       </PageHeading>
-      <div className="community-grid">
-        {items.map((i) => (
-          <section key={i.title} className="community-item">
-            <div className="display">{i.number}</div>
-            <h3 className="display">{i.title}</h3>
-            <p>{i.text}</p>
-          </section>
+      <div className="exp-grid">
+        {items.map((i, k) => (
+          <Glow as="article" key={i.title}>
+            <span className="exp-number">0{k + 1}</span>
+            <span className="exp-content">
+              <span className="exp-stage">{i.stage}</span>
+              <h2 className="exp-value">{i.number}</h2>
+              <span className="exp-label">
+                {i.title.charAt(0) +
+                  i.title
+                    .slice(1)
+                    .toLowerCase()
+                    .replace(/\.$/, "")
+                    .replace("aithon", "Aithon")}
+              </span>
+              <span className="exp-divider" />
+              <p className="exp-desc">{i.text}</p>
+            </span>
+          </Glow>
         ))}
       </div>
     </main>
@@ -662,6 +776,7 @@ export function Contact() {
   const [sending, setSending] = useState(false);
   const [delivered, setDelivered] = useState(false);
   const [trap, setTrap] = useState("");
+  const [open, setOpen] = useState(false);
   const subject = encodeURIComponent(`Portfolio inquiry: ${who}`);
   const body = encodeURIComponent(
     `Hi Mahi,\n\nI'm ${name} (${address}).\nI'm reaching out as: ${who}.\nAreas: ${domains.join(", ")}\n\n${problem}\n\nThanks,\n${name}`,
@@ -680,181 +795,218 @@ export function Contact() {
         I'll figure out where to start.
       </PageHeading>
       <div className="contact-layout">
-        <form
-          className="contact-form"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setSending(true);
-            try {
-              const r = await sendContact({
-                who,
-                areas: domains,
-                message: problem,
-                name,
-                email: address,
-                website: trap,
-              });
-              setDelivered(r.delivered);
-            } catch {
-              setDelivered(false);
-            } finally {
-              setSending(false);
-              setPrepared(true);
-            }
-          }}
-        >
-          <div className="progress">
-            {[0, 1, 2].map((i) => (
-              <span key={i} className={i <= step ? "active" : ""} />
-            ))}
-          </div>
-          <span className="mono text-primary">0{step + 1} / 03</span>
-          {prepared && delivered ? (
-            <>
-              <h2 className="display">GOT IT. THANK YOU.</h2>
-              <p className="text-muted-foreground leading-7">
-                Your message is in my inbox. I'll reply to {address} personally,
-                usually within a day or two.
-              </p>
-            </>
-          ) : prepared ? (
-            <>
-              <h2 className="display">LET'S GET IT TO MY INBOX.</h2>
-              <p className="text-muted-foreground leading-7">
-                Your message is ready. Open your email app to send it directly
-                to me.
-              </p>
-              <Button asChild className="mt-6">
-                <a href={`mailto:${email}?subject=${subject}&body=${body}`}>
-                  Open email to send <ArrowUpRight />
-                </a>
-              </Button>
-            </>
-          ) : (
-            <>
-              {step === 0 && (
+        <section className="contact-start">
+          <p className="mono text-primary">
+            3 QUICK QUESTIONS · UNDER A MINUTE
+          </p>
+          <h2 className="display">
+            WHO ARE YOU, WHAT'S MESSY, AND WHERE DO I REPLY?
+          </h2>
+          <p className="text-muted-foreground">
+            Your message goes straight to my inbox. I reply personally.
+          </p>
+          <Button
+            size="lg"
+            className="contact-start-btn"
+            onClick={() => setOpen(true)}
+          >
+            {prepared && delivered ? "Send another message" : "Start"}{" "}
+            <ArrowRight />
+          </Button>
+        </section>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent className="dialog-panel contact-modal">
+            <DialogTitle className="sr-only">Contact Mahidhara</DialogTitle>
+            <DialogDescription className="sr-only">
+              Three short questions, then your message is sent.
+            </DialogDescription>
+            <form
+              className="contact-form"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setSending(true);
+                try {
+                  const r = await sendContact({
+                    who,
+                    areas: domains,
+                    message: problem,
+                    name,
+                    email: address,
+                    website: trap,
+                  });
+                  setDelivered(r.delivered);
+                } catch {
+                  setDelivered(false);
+                } finally {
+                  setSending(false);
+                  setPrepared(true);
+                }
+              }}
+            >
+              <div className="progress">
+                {[0, 1, 2].map((i) => (
+                  <span key={i} className={i <= step ? "active" : ""} />
+                ))}
+              </div>
+              <span className="mono text-primary">0{step + 1} / 03</span>
+              {prepared && delivered ? (
                 <>
-                  <h2 className="display">WHO ARE YOU?</h2>
-                  <div className="filters">
-                    {["Hiring", "Founder / Business", "Student", "Other"].map(
-                      (v) => (
-                        <Button
-                          key={v}
-                          type="button"
-                          variant={who === v ? "default" : "outline"}
-                          onClick={() => setWho(v)}
-                        >
-                          {v}
-                        </Button>
-                      ),
+                  <h2 className="display">GOT IT. THANK YOU.</h2>
+                  <p className="text-muted-foreground leading-7">
+                    Your message is in my inbox. I'll reply to {address}{" "}
+                    personally, usually within a day or two.
+                  </p>
+                </>
+              ) : prepared ? (
+                <>
+                  <h2 className="display">LET'S GET IT TO MY INBOX.</h2>
+                  <p className="text-muted-foreground leading-7">
+                    Your message is ready. Open your email app to send it
+                    directly to me.
+                  </p>
+                  <Button asChild className="mt-6">
+                    <a href={`mailto:${email}?subject=${subject}&body=${body}`}>
+                      Open email to send <ArrowUpRight />
+                    </a>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {step === 0 && (
+                    <>
+                      <h2 className="display">WHO ARE YOU?</h2>
+                      <div className="filters">
+                        {[
+                          "Hiring",
+                          "Founder / Business",
+                          "Student",
+                          "Other",
+                        ].map((v) => (
+                          <Button
+                            key={v}
+                            type="button"
+                            variant={who === v ? "default" : "outline"}
+                            onClick={() => setWho(v)}
+                          >
+                            {v}
+                          </Button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  {step === 1 && (
+                    <>
+                      <h2 className="display">WHAT'S MESSY?</h2>
+                      <div className="filters">
+                        {[
+                          "Data",
+                          "Sales",
+                          "Marketing",
+                          "Operations",
+                          "Process",
+                          "Tech",
+                        ].map((d) => (
+                          <Button
+                            type="button"
+                            key={d}
+                            variant={
+                              domains.includes(d) ? "default" : "outline"
+                            }
+                            onClick={() =>
+                              setDomains((v) =>
+                                v.includes(d)
+                                  ? v.filter((x) => x !== d)
+                                  : [...v, d],
+                              )
+                            }
+                          >
+                            {domains.includes(d) && <Check />}
+                            {d}
+                          </Button>
+                        ))}
+                      </div>
+                      <label>
+                        Tell me a little about the problem
+                        <textarea
+                          aria-label="Tell me about the problem"
+                          required
+                          rows={5}
+                          value={problem}
+                          onChange={(e) => setProblem(e.target.value)}
+                          placeholder="What's happening? What would better look like?"
+                        />
+                      </label>
+                    </>
+                  )}
+                  {step === 2 && (
+                    <>
+                      <h2 className="display">AND WHO SHOULD I REPLY TO?</h2>
+                      <label>
+                        Your name
+                        <input
+                          required
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          autoComplete="name"
+                        />
+                      </label>
+                      <input
+                        className="hp-field"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        aria-hidden="true"
+                        value={trap}
+                        onChange={(e) => setTrap(e.target.value)}
+                        name="website"
+                      />
+                      <label>
+                        Your email
+                        <input
+                          type="email"
+                          required
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          autoComplete="email"
+                        />
+                      </label>
+                    </>
+                  )}
+                  <div className="form-actions contact-actions">
+                    {step < 2 ? (
+                      <Button
+                        type="button"
+                        size="lg"
+                        className="contact-next"
+                        disabled={step === 0 ? !who : !problem.trim()}
+                        onClick={() => setStep((v) => v + 1)}
+                      >
+                        Continue <ArrowRight />
+                      </Button>
+                    ) : (
+                      <Button
+                        type="submit"
+                        size="lg"
+                        className="contact-next"
+                        disabled={sending || !name.trim() || !address.trim()}
+                      >
+                        {sending ? "Sending…" : "Send"} <ArrowUpRight />
+                      </Button>
+                    )}
+                    {step > 0 && (
+                      <button
+                        type="button"
+                        className="contact-back"
+                        onClick={() => setStep((v) => v - 1)}
+                      >
+                        ← Back
+                      </button>
                     )}
                   </div>
                 </>
               )}
-              {step === 1 && (
-                <>
-                  <h2 className="display">WHAT'S MESSY?</h2>
-                  <div className="filters">
-                    {[
-                      "Data",
-                      "Sales",
-                      "Marketing",
-                      "Operations",
-                      "Process",
-                      "Tech",
-                    ].map((d) => (
-                      <Button
-                        type="button"
-                        key={d}
-                        variant={domains.includes(d) ? "default" : "outline"}
-                        onClick={() =>
-                          setDomains((v) =>
-                            v.includes(d)
-                              ? v.filter((x) => x !== d)
-                              : [...v, d],
-                          )
-                        }
-                      >
-                        {domains.includes(d) && <Check />}
-                        {d}
-                      </Button>
-                    ))}
-                  </div>
-                  <label>
-                    Tell me a little about the problem
-                    <textarea
-                      aria-label="Tell me about the problem"
-                      required
-                      rows={5}
-                      value={problem}
-                      onChange={(e) => setProblem(e.target.value)}
-                      placeholder="What's happening? What would better look like?"
-                    />
-                  </label>
-                </>
-              )}
-              {step === 2 && (
-                <>
-                  <h2 className="display">AND WHO SHOULD I REPLY TO?</h2>
-                  <label>
-                    Your name
-                    <input
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      autoComplete="name"
-                    />
-                  </label>
-                  <input
-                    className="hp-field"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    aria-hidden="true"
-                    value={trap}
-                    onChange={(e) => setTrap(e.target.value)}
-                    name="website"
-                  />
-                  <label>
-                    Your email
-                    <input
-                      type="email"
-                      required
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      autoComplete="email"
-                    />
-                  </label>
-                </>
-              )}
-              <div className="form-actions">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  disabled={step === 0}
-                  onClick={() => setStep((v) => v - 1)}
-                >
-                  Back
-                </Button>
-                {step < 2 ? (
-                  <Button
-                    type="button"
-                    disabled={step === 0 ? !who : !problem.trim()}
-                    onClick={() => setStep((v) => v + 1)}
-                  >
-                    Continue <ArrowRight />
-                  </Button>
-                ) : (
-                  <Button
-                    type="submit"
-                    disabled={sending || !name.trim() || !address.trim()}
-                  >
-                    {sending ? "Sending…" : "Send"} <ArrowUpRight />
-                  </Button>
-                )}
-              </div>
-            </>
-          )}
-        </form>
+            </form>
+          </DialogContent>
+        </Dialog>
         <aside className="contact-aside">
           <p className="mono text-muted-foreground mb-5">
             PREFER THE DIRECT ROUTE?

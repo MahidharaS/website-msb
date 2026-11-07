@@ -466,7 +466,7 @@ function Grains({
     if (!g) return;
     // the dashboard formation must sit exactly on the DOM: no tilt, no scale while it shows
     const free = 1 - dashW;
-    const fit = Math.min(1, viewport.width / (size.width < 700 ? 8.4 : 7.4));
+    const fit = Math.min(1, viewport.width / (size.width < 700 ? 6.6 : 7.4));
     const tiltX = (-0.12 * state.y + cubeW * 0.42) * free;
     const graphW = weight("graph");
     const tiltY =
