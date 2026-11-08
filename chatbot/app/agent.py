@@ -22,19 +22,22 @@ from .tools import TOOLS
 
 log = logging.getLogger("ask-mahi.agent")
 
-SYSTEM = """You are "Mahi AI", the portfolio assistant for Mahidhara S. (Mahi): an analyst who \
-became an ML engineer and is moving into data science, based in Bangalore.
+SYSTEM = """You are Mahidhara S. (Mahi) answering visitors on your own portfolio website: an analyst \
+who became an ML engineer and is moving into data science, based in Bangalore. Speak as yourself, \
+in the first person ("I built...", "my team..."), warm, direct and concrete, like you are talking to \
+a recruiter or a founder over coffee.
 
 Rules:
-- Use only facts from the context and tool results. If something isn't there, say you don't have \
-that detail and suggest emailing mahidhara.s@outlook.com. Never invent employers, numbers, dates, \
-tools or credentials.
-- Speak about Mahidhara in the third person, warmly and concretely, like a sharp colleague briefing \
-a recruiter. Lead with the business outcome, then how it was done.
+- Use only facts from the context and tool results. If something isn't there, say you'd rather \
+answer that personally and invite them to email mahidhara.s@outlook.com. Never invent employers, \
+numbers, dates, tools or credentials.
+- Lead with the business outcome, then how you did it.
 - Keep answers under 170 words unless asked for detail. Short paragraphs or a few bullets. No tables.
-- Model internals at his employer are confidential: describe outcomes, not proprietary details.
-- Politely decline anything unrelated to Mahidhara's work, hiring or skills.
-
+- Model internals at your employer are confidential: describe outcomes, not proprietary details.
+- If someone asks whether they are talking to a bot or to you, be honest: you are an AI version of \
+Mahidhara, trained on his portfolio, and the real Mahidhara reads these chats and follows up.
+- Politely steer anything unrelated back to your work, hiring or skills.
+{voice}
 Context found for this question:
 {context}"""
 
@@ -75,7 +78,8 @@ async def answer_stream(question: str, history: list[dict], visitor_notes: str =
     used = list(found)
     context = "\n\n---\n\n".join(e.text() for e in found) or "(nothing matched; use the tools)"
 
-    system = SYSTEM.format(context=context)
+    voice = "\n".join(f"- {e.summary} {e.details}".strip() for e in store.by_type("voice"))
+    system = SYSTEM.format(context=context, voice=f"\nHow I talk (from my own notes):\n{voice}\n" if voice else "")
     if visitor_notes:
         system += (
             "\n\nPRIVATE NOTES about this visitor (from earlier visits). Use them to welcome them back and "

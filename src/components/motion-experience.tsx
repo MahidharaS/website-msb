@@ -10,6 +10,7 @@ import {
 } from "react";
 import { ArrowDown, ArrowUpRight, Pause, Play } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { cases, journeyChapters } from "@/data/content";
 import { AsciiPortrait } from "./ascii-portrait";
@@ -212,11 +213,22 @@ function LessonCard() {
   );
 }
 
+function StickyWorkCta() {
+  const [host, setHost] = useState<HTMLElement | null>(null);
+  useEffect(() => setHost(document.body), []);
+  if (!host) return null;
+  return createPortal(
+    <Link to="/work" className="hero-sticky-cta">
+      See the work <ArrowUpRight size={18} />
+    </Link>,
+    host,
+  );
+}
+
 export function MotionHero() {
   return (
     <section className="motion-hero">
       <div className="motion-stage hero-v2">
-        
         <div className="motion-top mono">
           <span>
             <span className="status-dot" /> ANALYST → ML ENGINEER → DATA
@@ -227,9 +239,7 @@ export function MotionHero() {
         <div className="hero-main">
           <div className="hero-lead">
             <p className="mono text-primary">MAHIDHARA S.</p>
-            <p className="motion-kicker">
-              I DON'T JUST ANALYSE PROBLEMS.
-            </p>
+            <p className="motion-kicker">I DON'T JUST ANALYSE PROBLEMS.</p>
             <h1 className="display">
               I WORK
               <br />
@@ -244,13 +254,11 @@ export function MotionHero() {
           </div>
           <div className="hero-side">
             <p className="motion-sub">
-              I connect <b>data</b>,{" "}
-              <b>people</b>, and{" "}
-              <b>processes</b> to turn messy business
-              problems into measurable outcomes.
+              I connect <b>data</b>, <b>people</b>, and <b>processes</b> to turn
+              messy business problems into measurable outcomes.
             </p>
             <div className="hero-actions">
-              <Button asChild size="lg">
+              <Button asChild size="lg" className="hero-work-btn">
                 <Link to="/work">
                   See the work <ArrowUpRight />
                 </Link>
@@ -298,6 +306,8 @@ export function MotionHero() {
           />
         </div>
       </div>
+      {/* phones: a persistent full-width primary action, portalled so no ancestor transform moves it */}
+      <StickyWorkCta />
       <div className="tool-marquee mono" aria-label="Tools I work with">
         <div className="tool-track">
           {[...TOOLS, ...TOOLS].map((t, i) => (

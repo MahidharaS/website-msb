@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, Copy, RotateCcw, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Glow } from "./glow";
 import { assets, email } from "@/data/content";
 import {
   CHAT_API_URL,
@@ -285,7 +286,7 @@ export function AskMahi() {
             send(draft);
           }}
         >
-          <div className="ask-input">
+          <Glow className="ask-input" radius={26}>
             <textarea
               ref={input}
               rows={1}
@@ -324,7 +325,7 @@ export function AskMahi() {
                 <ArrowUp />
               </Button>
             )}
-          </div>
+          </Glow>
           <p className="ask-note">
             AI can be wrong; confirm anything important with Mahidhara at{" "}
             {email}. Conversations are shared with Mahidhara so he can follow

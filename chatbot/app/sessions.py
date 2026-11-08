@@ -40,7 +40,7 @@ def record(session_id: str, role: str, content: str, meta: dict | None = None) -
 
 
 def transcript(s: Session, start: int = 0) -> str:
-    return "\n\n".join(f"{'VISITOR' if r == 'user' else 'MAHI AI'}: {c}" for r, c in s.turns[start:])
+    return "\n\n".join(f"{'VISITOR' if r == 'user' else 'MAHI (AI)'}: {c}" for r, c in s.turns[start:])
 
 
 async def flush(session_id: str, reason: str) -> bool:

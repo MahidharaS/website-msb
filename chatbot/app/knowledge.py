@@ -3,7 +3,7 @@
 Entry schema (one object, a list of objects, or {"entries": [...]} per .json file):
 
     {
-      "type": "profile | experience | project | skill | achievement | education | faq | story",
+      "type": "profile | experience | project | skill | achievement | education | faq | story | voice",
       "title": "Lead engine",
       "summary": "One or two sentences.",
       "details": "Longer text (optional).",
