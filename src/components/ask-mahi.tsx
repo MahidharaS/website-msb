@@ -20,6 +20,7 @@ type Message = ChatTurn & {
   id: string;
   sources?: Source[];
   pending?: boolean;
+  nudge?: boolean;
   error?: boolean;
 };
 type Mode = "checking" | "live" | "offline";
@@ -40,6 +41,21 @@ const SUGGESTIONS = [
 const newId = () => Math.random().toString(36).slice(2, 10);
 
 const sessionId = chatSessionId;
+
+// A one-time, optional "who am I talking to?" note. It appears only after an answer has
+// landed and the visitor has gone quiet, never while they type, and never if they already
+// introduced themselves.
+const NUDGE_TEXT =
+  "By the way, I'd love to know who I'm talking to. If you're happy to share your name and where you work (or an email), I'll follow up personally. Completely optional; keep asking either way.";
+const INTRODUCED = /@|\b(my name is|i am|i'm|im|this is|call me)\s+[a-z]/i;
+const NUDGE_KEY = "ask-mahi-nudged";
+function nudgedAlready() {
+  try {
+    return sessionStorage.getItem(NUDGE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
 
 export function AskMahi() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -82,6 +98,34 @@ export function AskMahi() {
     };
   }, []);
 
+  // quiet-moment nudge: 25s after the first answer, 12s after later ones
+  const [nudgeOpen, setNudgeOpen] = useState(false);
+  useEffect(() => {
+    if (busy || draft.trim() || nudgedAlready()) return;
+    const asked = messages.filter((m) => m.role === "user");
+    if (!asked.length || asked.some((m) => INTRODUCED.test(m.content))) return;
+    const last = messages[messages.length - 1];
+    if (!last || last.role !== "assistant" || last.pending || last.error)
+      return;
+    const t = window.setTimeout(
+      () => {
+        if (document.visibilityState !== "visible" || nudgedAlready()) return;
+        try {
+          sessionStorage.setItem(NUDGE_KEY, "1");
+        } catch {
+          /* ignore */
+        }
+        setMessages((m) => [
+          ...m,
+          { id: newId(), role: "assistant", content: NUDGE_TEXT, nudge: true },
+        ]);
+        setNudgeOpen(true);
+      },
+      asked.length === 1 ? 25000 : 12000,
+    );
+    return () => clearTimeout(t);
+  }, [messages, busy, draft]);
+
   useEffect(() => {
     log.current?.scrollTo({
       top: log.current.scrollHeight,
@@ -93,6 +137,7 @@ export function AskMahi() {
     const q = text.trim();
     if (!q || busy) return;
     setDraft("");
+    setNudgeOpen(false);
     const history = messages
       .filter((m) => !m.error)
       .map(({ role, content }) => ({ role, content }));
@@ -260,20 +305,50 @@ export function AskMahi() {
                       )}
                     </div>
                   ) : null}
-                  {m.role === "assistant" && !m.pending && m.content && (
-                    <div className="msg-actions">
+                  {m.nudge && nudgeOpen && (
+                    <div className="msg-nudge">
                       <Button
-                        variant="ghost"
                         size="sm"
-                        className="mono h-7 px-2"
-                        onClick={() =>
-                          navigator.clipboard?.writeText(m.content)
-                        }
+                        onClick={() => {
+                          setDraft("Hi, I'm  from ");
+                          setNudgeOpen(false);
+                          requestAnimationFrame(() => {
+                            const el = input.current;
+                            if (el) {
+                              el.focus();
+                              el.setSelectionRange(8, 8);
+                            }
+                          });
+                        }}
                       >
-                        <Copy size={12} /> COPY
+                        Sure, I'll introduce myself
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setNudgeOpen(false)}
+                      >
+                        Maybe later
                       </Button>
                     </div>
                   )}
+                  {m.role === "assistant" &&
+                    !m.pending &&
+                    m.content &&
+                    !m.nudge && (
+                      <div className="msg-actions">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="mono h-7 px-2"
+                          onClick={() =>
+                            navigator.clipboard?.writeText(m.content)
+                          }
+                        >
+                          <Copy size={12} /> COPY
+                        </Button>
+                      </div>
+                    )}
                 </div>
               </div>
             ))
