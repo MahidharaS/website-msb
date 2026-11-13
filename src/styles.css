@@ -1736,3 +1736,4 @@ body { overflow-x: hidden; }
 .tool-marquee { margin-inline: 0 !important; }
 html, body { overflow-x: clip; }
 .contact-modal .contact-actions { justify-content: stretch !important; grid-template-columns: 1fr; }
+.msg-nudge { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; animation: tool-in .5s both; }
