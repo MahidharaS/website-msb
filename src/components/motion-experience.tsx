@@ -218,8 +218,8 @@ function StickyWorkCta() {
   useEffect(() => setHost(document.body), []);
   if (!host) return null;
   return createPortal(
-    <Link to="/work" className="hero-sticky-cta">
-      See the work <ArrowUpRight size={18} />
+    <Link to="/lab" className="hero-sticky-cta">
+      Interview my AI <ArrowUpRight size={18} />
     </Link>,
     host,
   );
@@ -259,8 +259,8 @@ export function MotionHero() {
             </p>
             <div className="hero-actions">
               <Button asChild size="lg" className="hero-work-btn">
-                <Link to="/work">
-                  See the work <ArrowUpRight />
+                <Link to="/lab">
+                  Interview my AI <ArrowUpRight />
                 </Link>
               </Button>
               <Button asChild variant="ghost">
@@ -288,14 +288,14 @@ export function MotionHero() {
             </Link>
           </article>
           <LessonCard />
-          <Link to="/lab" className="bento bento-cta">
+          <Link to="/work" className="bento bento-cta">
             <span className="bento-arrow" aria-hidden="true">
               <ArrowUpRight size={16} />
             </span>
-            <strong>Interview my AI</strong>
+            <strong>See the work</strong>
             <p>
-              Ask anything about my work. It answers from my case studies, with
-              sources.
+              Five real problems and what changed: 94.6% lead scoring, 40%
+              faster reporting, +10% shift output.
             </p>
           </Link>
         </div>
